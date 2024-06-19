@@ -3,8 +3,38 @@ from googletrans import Translator
 import os
 import csv
 import customtkinter as CTk
+import pandas as pd
 
 translator = Translator()
+
+class flashcard: 
+    def __init__(self, english_word: str, spanish_word: str):
+        self.english_side = english_word
+        self.spanish_side = spanish_word
+
+class lexicon: 
+    def __init__(self, word_type: str):
+        app_data_directory = os.path.join(os.path.expanduser('~'), 'spanData')
+
+        # Create the directory if it doesn't exist
+        os.makedirs(app_data_directory, exist_ok=True)
+
+        # Define the filename
+        filename = 'spanish.csv'
+
+        # Define the full file path
+        file_path = os.path.join(app_data_directory, filename)
+
+        # Reading from save csv to pull data
+        df = pd.read_csv(file_path)
+        df = df[df['Classification'] == word_type]
+
+        # Saving first parts of the class
+        self.english_words = list(df.iloc[:, 1])
+        self.spanish_words = list(df.iloc[:, 0])
+        
+        # Converting class to flashcards
+        self.flashcard_list = [flashcard(self.english_words[x], self.spanish_words[x]) for x in range(len(self.english_words))]
 
 def spanTrans(text_to_translate):
     global translator
