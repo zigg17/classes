@@ -113,6 +113,9 @@ class scienceflashcards(CTk.CTkToplevel):
         self.resizable(False, False)
         self.position_window(500, 400)
         self.title("JakeLingo: Scientific")
+
+        # Initializes relevant words into flashcards
+        sceintfic_lexicon = lexicon('Scientific')
         
         # Create a frame to contain the buttons
         button_frame = CTk.CTkFrame(self)
@@ -144,6 +147,9 @@ class advancedflashcards(CTk.CTkToplevel):
         self.resizable(False, False)
         self.position_window(500, 400)
         self.title("JakeLingo: Advanced")
+
+        # Initializes relevant words into flashcards
+        advanced_lexicon = lexicon('Advanced')
         
         # Create a frame to contain the buttons
         button_frame = CTk.CTkFrame(self)
@@ -176,6 +182,9 @@ class allflashcards(CTk.CTkToplevel):
         self.resizable(False, False)
         self.position_window(500, 400)
         self.title("JakeLingo: All")
+
+        # Initializes all words into flashcards
+        advanced_lexicon = lexicon('Advanced')
         
         # Create a frame to contain the buttons
         button_frame = CTk.CTkFrame(self)
@@ -203,11 +212,13 @@ class allflashcards(CTk.CTkToplevel):
 # Add term class
 class addterm(CTk.CTkToplevel):
     def __init__(self, *args, **kwargs):
+        # Opening window for the add term page
         super().__init__(*args, **kwargs)
         self.resizable(False, False)
         self.position_window(300, 200)
         self.title("JakeLingo: Add Term")
-
+        
+        # Adding buffer label
         self.label = CTk.CTkLabel(self, text='')
         self.label.grid(row=0, column=0)
 
@@ -233,16 +244,16 @@ class addterm(CTk.CTkToplevel):
     
     # Add word, check for an contingencies
     def addWord(self):
+        # Error checking
         if self.entry.get() == '':
             messagebox.showerror("Error", "No entry for word")
             return
-        
         if self.dropdown.get() == 'Word Type:':
             messagebox.showerror("Error", "Need word type.")
             return
-         
+        
+        # The rest is for extracting string from custom tkinter interface
         spwords(span=str(self.entry.get()), classification=str(self.dropdown.get()))
-
         self.entry.delete(0,CTk.END)
         self.dropdown.set('Word Type:')
         self.update_idletasks()
@@ -262,7 +273,7 @@ class Application(CTk.CTk):
         # Set the size of the window
         self.position_window(800, 450)
 
-        # Filesetup
+        # File setup
         self.setup()
 
         # Create three frames with borders across the middle
@@ -335,7 +346,6 @@ class Application(CTk.CTk):
             if button == 'advanced':
                 self.toplevel_window = advancedflashcards(self)  # create window if its None or destroyed
                 self.toplevel_window.grab_set()
-
         else:
             self.toplevel_window.focus()  # if window exists focus it
     
