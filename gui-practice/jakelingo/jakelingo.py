@@ -7,12 +7,12 @@ import pandas as pd
 
 translator = Translator()
 
-class flashcard: 
+class flashcard:
     def __init__(self, english_word: str, spanish_word: str):
         self.english_side = english_word
         self.spanish_side = spanish_word
 
-class lexicon: 
+class lexicon:
     def __init__(self, word_type: str):
         app_data_directory = os.path.join(os.path.expanduser('~'), 'spanData')
 
@@ -73,15 +73,13 @@ class spwords:
 class convoflashcards(CTk.CTkToplevel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        # Initializes relevant words
-        convo_lexicon = lexicon('Conversational')
-
-        # Initializes window for the cards to sit in
         self.resizable(False, False)
         self.position_window(500, 400)
         self.title("JakeLingo: Conversational")
         
+        # Initializes relevant words
+        convo_lexicon = lexicon('Conversational')
+
         # Create a frame to contain the buttons
         button_frame = CTk.CTkFrame(self)
         button_frame.pack(side="bottom", fill="x")
@@ -356,7 +354,7 @@ class Application(CTk.CTk):
             self.toplevel_window = addterm(self)  # create window if its None or destroyed
             self.toplevel_window.grab_set()
         else:
-            self.toplevel_window.focus()  # if window exists focus it   
+            self.toplevel_window.focus()  # if window exists focus it
 
 # Final loop for application
 if __name__ == "__main__":
