@@ -3,9 +3,31 @@ from googletrans import Translator
 import os
 import csv
 import customtkinter as CTk
+from tkinter import messagebox
 import pandas as pd
 
 translator = Translator()
+
+class Cycle:
+    def __init__(self, iterable):
+        self.items = iterable
+        print(iterable)
+        self.index = 0
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        item = self.items[self.index]
+        self.index = (self.index + 1) % len(self.items)
+        return item
+
+    def prev(self):
+        self.index = (self.index - 1) % len(self.items)
+        return self.items[self.index]
+
+    def current(self):
+        return self.items[self.index]
 
 class flashcard:
     def __init__(self, english_word: str, spanish_word: str):
@@ -29,7 +51,7 @@ class lexicon:
         df = pd.read_csv(file_path)
 
         # Allows for users to go through entirety of word deck if they desire
-        if(word_type != 'all'):
+        if(word_type != 'All'):
             df = df[df['Classification'] == word_type]
         else:
             df = df.drop(columns=['Classification'])
@@ -52,6 +74,10 @@ class spwords:
         self.span = span
         self.classification = classification
         self.eng = spanTrans(self.span)
+
+        if (self.eng.lower() == self.span.lower()):
+            messagebox.showerror(title = "Error", message = "Not translatable, misspelled, or both words are the same in both languages.")
+            return
 
         app_data_directory = os.path.join(os.path.expanduser('~'), 'spanData')
 
@@ -78,15 +104,24 @@ class convoflashcards(CTk.CTkToplevel):
         self.title("JakeLingo: Conversational")
         
         # Initializes relevant words
-        convo_lexicon = lexicon('Conversational')
+        if(len(lexicon('Conversational').flashcard_list) == 0):
+            messagebox.showerror(title = "Error", message = "No available words.")
+            self.destroy()
+            return
+        else:
+            convo_flashcards = Cycle(lexicon('Conversational').flashcard_list)
 
         # Create a frame to contain the buttons
         button_frame = CTk.CTkFrame(self)
         button_frame.pack(side="bottom", fill="x")
 
         # Initializes card frame
-        card = CTk.CTkFrame(self, width = 450, height = 250 , fg_color= 'white')
-        card.place(x= 26, y = 45)
+        card = CTk.CTkFrame(self, width=450, height=250, fg_color='white')
+        card.place(x=26, y=45)
+
+        # Add label to the card frame
+        card_label = CTk.CTkLabel(card, text=convo_flashcards.current(), text_color='black', font=('Arial', 24))
+        card_label.place(relx=0.5, rely=0.5, anchor="center")
 
         # Add buttons to the frame
         button1 = CTk.CTkButton(button_frame, text="Prev")
@@ -112,15 +147,24 @@ class scienceflashcards(CTk.CTkToplevel):
         self.position_window(500, 400)
         self.title("JakeLingo: Scientific")
 
-        # Initializes relevant words into flashcards
-        sceintfic_lexicon = lexicon('Scientific')
+        # Initializes relevant words
+        if(len(lexicon('Scientific').flashcard_list) == 0):
+            messagebox.showerror(title = "Error", message = "No available words.")
+            self.destroy()
+            return
+        else:
+            scientific_flashcards = Cycle(lexicon('Scientific').flashcard_list)
         
         # Create a frame to contain the buttons
         button_frame = CTk.CTkFrame(self)
         button_frame.pack(side="bottom", fill="x")
 
-        card = CTk.CTkFrame(self, width = 450, height = 250 , fg_color= 'white')
-        card.place(x= 26, y = 45)
+        card = CTk.CTkFrame(self, width=450, height=250, fg_color='white')
+        card.place(x=26, y=45)
+
+        # Add label to the card frame
+        card_label = CTk.CTkLabel(card, text="Flashcard Text", text_color='black', font=('Arial', 24))
+        card_label.place(relx=0.5, rely=0.5, anchor="center")
 
         # Add buttons to the frame
         button1 = CTk.CTkButton(button_frame, text="Prev")
@@ -146,15 +190,24 @@ class advancedflashcards(CTk.CTkToplevel):
         self.position_window(500, 400)
         self.title("JakeLingo: Advanced")
 
-        # Initializes relevant words into flashcards
-        advanced_lexicon = lexicon('Advanced')
+        # Initializes relevant words
+        if(len(lexicon('Advanced').flashcard_list) == 0):
+            messagebox.showerror(title = "Error", message = "No available words.")
+            self.destroy()
+            return
+        else:
+            scientific_flashcards = Cycle(lexicon('Advanced').flashcard_list)
         
         # Create a frame to contain the buttons
         button_frame = CTk.CTkFrame(self)
         button_frame.pack(side="bottom", fill="x")
 
-        card = CTk.CTkFrame(self, width = 450, height = 250 , fg_color= 'white')
-        card.place(x= 26, y = 45)
+        card = CTk.CTkFrame(self, width=450, height=250, fg_color='white')
+        card.place(x=26, y=45)
+
+        # Add label to the card frame
+        card_label = CTk.CTkLabel(card, text="Flashcard Text", text_color='black', font=('Arial', 24))
+        card_label.place(relx=0.5, rely=0.5, anchor="center")
 
         # Add buttons to the frame
         button1 = CTk.CTkButton(button_frame, text="Prev")
@@ -171,7 +224,6 @@ class advancedflashcards(CTk.CTkToplevel):
         x = (screen_width/2) - (width/2)
         y = (screen_height/2) - (height/2)
         self.geometry('%dx%d+%d+%d' % (width, height, x, y))
-    
 
 # All flashcards window and operations
 class allflashcards(CTk.CTkToplevel):
@@ -181,15 +233,24 @@ class allflashcards(CTk.CTkToplevel):
         self.position_window(500, 400)
         self.title("JakeLingo: All")
 
-        # Initializes all words into flashcards
-        advanced_lexicon = lexicon('Advanced')
+        # Initializes relevant words
+        if(len(lexicon('All').flashcard_list) == 0):
+            messagebox.showerror(title = "Error", message = "No available words.")
+            self.destroy()
+            return
+        else:
+            scientific_flashcards = Cycle(lexicon('All').flashcard_list)
         
         # Create a frame to contain the buttons
         button_frame = CTk.CTkFrame(self)
         button_frame.pack(side="bottom", fill="x")
 
-        card = CTk.CTkFrame(self, width = 450, height = 250 , fg_color= 'white')
-        card.place(x= 26, y = 45)
+        card = CTk.CTkFrame(self, width=450, height=250, fg_color='white')
+        card.place(x=26, y=45)
+
+        # Add label to the card frame
+        card_label = CTk.CTkLabel(card, text="Flashcard Text", text_color='black', font=('Arial', 24))
+        card_label.place(relx=0.5, rely=0.5, anchor="center")
 
         # Add buttons to the frame
         button1 = CTk.CTkButton(button_frame, text="Prev")
@@ -233,6 +294,7 @@ class addterm(CTk.CTkToplevel):
         self.button = CTk.CTkButton(self, text="Submit", command= lambda: self.addWord())
         self.button.grid(row=3, column=0, padx=10, pady=20)
 
+    # Positioning window for better presentation
     def position_window(self, width, height):
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
