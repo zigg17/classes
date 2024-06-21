@@ -11,7 +11,6 @@ translator = Translator()
 class Cycle:
     def __init__(self, iterable):
         self.items = iterable
-        print(iterable)
         self.index = 0
 
     def __iter__(self):
@@ -70,7 +69,7 @@ def spanTrans(text_to_translate):
     return translated_text.text
 
 class spwords:
-    def __init__(self, span, classification):
+    def __init__(self, span, classification, verb):
         self.span = span
         self.classification = classification
         self.eng = spanTrans(self.span)
@@ -90,10 +89,13 @@ class spwords:
         # Define the full file path
         file_path = os.path.join(app_data_directory, filename)
 
+        if(verb == True):
+            self.eng = 'to ' + self.eng
+
         # Write to the CSV file at the file path
         with open(file_path, mode='a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow([self.span, self.eng, self.classification])
+            writer.writerow([self.span, self.eng, self.classification, verb])
 
 # Conversational flashcard window and operations
 class convoflashcards(CTk.CTkToplevel):
@@ -109,27 +111,27 @@ class convoflashcards(CTk.CTkToplevel):
             self.destroy()
             return
         else:
-            convo_flashcards = Cycle(lexicon('Conversational').flashcard_list)
+            self.convo_flashcards = Cycle(lexicon('Conversational').flashcard_list)
 
         # Create a frame to contain the buttons
-        button_frame = CTk.CTkFrame(self)
-        button_frame.pack(side="bottom", fill="x")
+        self.button_frame = CTk.CTkFrame(self)
+        self.button_frame.pack(side="bottom", fill="x")
 
         # Initializes card frame
-        card = CTk.CTkFrame(self, width=450, height=250, fg_color='white')
-        card.place(x=26, y=45)
+        self.card = CTk.CTkFrame(self, width=450, height=250, fg_color='white')
+        self.card.place(x=26, y=45)
 
         # Add label to the card frame
-        card_label = CTk.CTkLabel(card, text=convo_flashcards.current(), text_color='black', font=('Arial', 24))
-        card_label.place(relx=0.5, rely=0.5, anchor="center")
+        self.card_label = CTk.CTkLabel(self.card, text=self.convo_flashcards.current().spanish_side, text_color='black', font=('Arial', 24))
+        self.card_label.place(relx=0.5, rely=0.5, anchor="center")
 
         # Add buttons to the frame
-        button1 = CTk.CTkButton(button_frame, text="Prev")
-        button1.pack(side="left", padx=10, pady=10)
-        button2 = CTk.CTkButton(button_frame, text="Next")
-        button2.pack(side="left", padx=10, pady=10)
-        button3 = CTk.CTkButton(button_frame, text="Flip")
-        button3.pack(side="left", padx=10, pady=10)
+        self.button1 = CTk.CTkButton(self.button_frame, text="Prev", command=self.show_prev_card)
+        self.button1.pack(side="left", padx=10, pady=10)
+        self.button2 = CTk.CTkButton(self.button_frame, text="Next", command=self.show_next_card)
+        self.button2.pack(side="left", padx=10, pady=10)
+        self.button3 = CTk.CTkButton(self.button_frame, text="Flip", command=self.flip_card)
+        self.button3.pack(side="left", padx=10, pady=10)
 
     # Helps incorporate window in the proper place
     def position_window(self, width, height):
@@ -138,6 +140,23 @@ class convoflashcards(CTk.CTkToplevel):
         x = (screen_width/2) - (width/2)
         y = (screen_height/2) - (height/2)
         self.geometry('%dx%d+%d+%d' % (width, height, x, y))
+
+    # Function to show previous card
+    def show_prev_card(self):
+        self.convo_flashcards.prev()
+        self.card_label.configure(text = self.convo_flashcards.current().spanish_side)
+
+    # Function to show next card
+    def show_next_card(self):
+        self.convo_flashcards.next()
+        self.card_label.configure(text = self.convo_flashcards.current().spanish_side)
+
+    # Function to flip the card
+    def flip_card(self):
+        if (self.card_label.cget("text") == self.convo_flashcards.current().spanish_side):
+            self.card_label.configure(text = self.convo_flashcards.current().english_side)
+        else:
+            self.card_label.configure(text = self.convo_flashcards.current().spanish_side)
 
 # Scientific flashcard window and operations
 class scienceflashcards(CTk.CTkToplevel):
@@ -153,26 +172,26 @@ class scienceflashcards(CTk.CTkToplevel):
             self.destroy()
             return
         else:
-            scientific_flashcards = Cycle(lexicon('Scientific').flashcard_list)
+            self.scientific_flashcards = Cycle(lexicon('Scientific').flashcard_list)
         
         # Create a frame to contain the buttons
-        button_frame = CTk.CTkFrame(self)
-        button_frame.pack(side="bottom", fill="x")
+        self.button_frame = CTk.CTkFrame(self)
+        self.button_frame.pack(side="bottom", fill="x")
 
-        card = CTk.CTkFrame(self, width=450, height=250, fg_color='white')
-        card.place(x=26, y=45)
+        self.card = CTk.CTkFrame(self, width=450, height=250, fg_color='white')
+        self.card.place(x=26, y=45)
 
         # Add label to the card frame
-        card_label = CTk.CTkLabel(card, text="Flashcard Text", text_color='black', font=('Arial', 24))
-        card_label.place(relx=0.5, rely=0.5, anchor="center")
+        self.card_label = CTk.CTkLabel(self.card, text=self.scientific_flashcards.current().spanish_side, text_color='black', font=('Arial', 24))
+        self.card_label.place(relx=0.5, rely=0.5, anchor="center")
 
-        # Add buttons to the frame
-        button1 = CTk.CTkButton(button_frame, text="Prev")
-        button1.pack(side="left", padx=10, pady=10)
-        button2 = CTk.CTkButton(button_frame, text="Next")
-        button2.pack(side="left", padx=10, pady=10)
-        button3 = CTk.CTkButton(button_frame, text="Flip")
-        button3.pack(side="left", padx=10, pady=10)
+       # Add buttons to the frame
+        self.button1 = CTk.CTkButton(self.button_frame, text="Prev", command=self.show_prev_card)
+        self.button1.pack(side="left", padx=10, pady=10)
+        self.button2 = CTk.CTkButton(self.button_frame, text="Next", command=self.show_next_card)
+        self.button2.pack(side="left", padx=10, pady=10)
+        self.button3 = CTk.CTkButton(self.button_frame, text="Flip", command=self.flip_card)
+        self.button3.pack(side="left", padx=10, pady=10)
 
     # Positioning entire frame to be in proper place
     def position_window(self, width, height):
@@ -181,6 +200,23 @@ class scienceflashcards(CTk.CTkToplevel):
         x = (screen_width/2) - (width/2)
         y = (screen_height/2) - (height/2)
         self.geometry('%dx%d+%d+%d' % (width, height, x, y))
+    
+     # Function to show previous card
+    def show_prev_card(self):
+        self.scientific_flashcards.prev()
+        self.card_label.configure(text = self.scientific_flashcards.current().spanish_side)
+
+    # Function to show next card
+    def show_next_card(self):
+        self.scientific_flashcards.next()
+        self.card_label.configure(text = self.scientific_flashcards.current().spanish_side)
+
+    # Function to flip the card
+    def flip_card(self):
+        if (self.card_label.cget("text") == self.scientific_flashcards.current().spanish_side):
+            self.card_label.configure(text = self.scientific_flashcards.current().english_side)
+        else:
+            self.card_label.configure(text = self.scientific_flashcards.current().spanish_side)
 
 # Advanced flashcards window and operations
 class advancedflashcards(CTk.CTkToplevel):
@@ -196,26 +232,27 @@ class advancedflashcards(CTk.CTkToplevel):
             self.destroy()
             return
         else:
-            scientific_flashcards = Cycle(lexicon('Advanced').flashcard_list)
+            self.advanced_flashcards = Cycle(lexicon('Advanced').flashcard_list)
         
         # Create a frame to contain the buttons
-        button_frame = CTk.CTkFrame(self)
-        button_frame.pack(side="bottom", fill="x")
+        self.button_frame = CTk.CTkFrame(self)
+        self.button_frame.pack(side="bottom", fill="x")
 
-        card = CTk.CTkFrame(self, width=450, height=250, fg_color='white')
-        card.place(x=26, y=45)
+        # Initializes card frame
+        self.card = CTk.CTkFrame(self, width=450, height=250, fg_color='white')
+        self.card.place(x=26, y=45)
 
         # Add label to the card frame
-        card_label = CTk.CTkLabel(card, text="Flashcard Text", text_color='black', font=('Arial', 24))
-        card_label.place(relx=0.5, rely=0.5, anchor="center")
+        self.card_label = CTk.CTkLabel(self.card, text=self.advanced_flashcards.current().spanish_side, text_color='black', font=('Arial', 24))
+        self.card_label.place(relx=0.5, rely=0.5, anchor="center")
 
         # Add buttons to the frame
-        button1 = CTk.CTkButton(button_frame, text="Prev")
-        button1.pack(side="left", padx=10, pady=10)
-        button2 = CTk.CTkButton(button_frame, text="Next")
-        button2.pack(side="left", padx=10, pady=10)
-        button3 = CTk.CTkButton(button_frame, text="Flip")
-        button3.pack(side="left", padx=10, pady=10)
+        self.button1 = CTk.CTkButton(self.button_frame, text="Prev", command=self.show_prev_card)
+        self.button1.pack(side="left", padx=10, pady=10)
+        self.button2 = CTk.CTkButton(self.button_frame, text="Next", command=self.show_next_card)
+        self.button2.pack(side="left", padx=10, pady=10)
+        self.button3 = CTk.CTkButton(self.button_frame, text="Flip", command=self.flip_card)
+        self.button3.pack(side="left", padx=10, pady=10)
 
     # Positioning entire frame to be in the proper place
     def position_window(self, width, height):
@@ -224,6 +261,23 @@ class advancedflashcards(CTk.CTkToplevel):
         x = (screen_width/2) - (width/2)
         y = (screen_height/2) - (height/2)
         self.geometry('%dx%d+%d+%d' % (width, height, x, y))
+
+    # Function to show previous card
+    def show_prev_card(self):
+        self.advanced_flashcards.prev()
+        self.card_label.configure(text = self.advanced_flashcards.current().spanish_side)
+
+    # Function to show next card
+    def show_next_card(self):
+        self.advanced_flashcards.next()
+        self.card_label.configure(text = self.advanced_flashcards.current().spanish_side)
+
+    # Function to flip the card
+    def flip_card(self):
+        if (self.card_label.cget("text") == self.advanced_flashcards.current().spanish_side):
+            self.card_label.configure(text = self.advanced_flashcards.current().english_side)
+        else:
+            self.card_label.configure(text = self.advanced_flashcards.current().spanish_side)
 
 # All flashcards window and operations
 class allflashcards(CTk.CTkToplevel):
@@ -268,13 +322,28 @@ class allflashcards(CTk.CTkToplevel):
         y = (screen_height/2) - (height/2)
         self.geometry('%dx%d+%d+%d' % (width, height, x, y))
 
+    # Function to show previous card
+    def show_prev_card(self):
+        # Placeholder for showing previous card functionality
+        pass
+
+    # Function to show next card
+    def show_next_card(self):
+        # Placeholder for showing next card functionality
+        pass
+
+    # Function to flip the card
+    def flip_card(self):
+        # Placeholder for flipping card functionality
+        pass
+
 # Add term class
 class addterm(CTk.CTkToplevel):
     def __init__(self, *args, **kwargs):
         # Opening window for the add term page
         super().__init__(*args, **kwargs)
         self.resizable(False, False)
-        self.position_window(300, 200)
+        self.position_window(300, 250)
         self.title("JakeLingo: Add Term")
         
         # Adding buffer label
@@ -290,9 +359,14 @@ class addterm(CTk.CTkToplevel):
         self.dropdown.grid(row=2, column=0, padx=10, pady=10)
         self.dropdown.set('Word Type:')
 
+        # Checkbox for Verb
+        self.verb_var = CTk.StringVar(value="0")  # Variable to hold the state of the checkbox
+        self.checkbox = CTk.CTkCheckBox(self, text="Verb?", variable=self.verb_var, onvalue="1", offvalue="0")
+        self.checkbox.grid(row=3, column=0, padx=10, pady=10)
+
         # Button
         self.button = CTk.CTkButton(self, text="Submit", command= lambda: self.addWord())
-        self.button.grid(row=3, column=0, padx=10, pady=20)
+        self.button.grid(row=4, column=0, padx=10, pady=20)
 
     # Positioning window for better presentation
     def position_window(self, width, height):
@@ -311,9 +385,22 @@ class addterm(CTk.CTkToplevel):
         if self.dropdown.get() == 'Word Type:':
             messagebox.showerror("Error", "Need word type.")
             return
+        app_data_directory = os.path.join(os.path.expanduser('~'), 'spanData')
+
+        os.makedirs(app_data_directory, exist_ok=True)
+        filename = 'spanish.csv'
+        file_path = os.path.join(app_data_directory, filename)
+        df = pd.read_csv(file_path)
+        if self.entry.get() in df['Español'].values:
+            messagebox.showerror("Error", "Word is already entered.")
+            return
+        
+        # Check if "Verb?" is checked
+        is_verb = self.verb_var.get() == "1"
+        self.verb_var.set("0")
         
         # The rest is for extracting string from custom tkinter interface
-        spwords(span=str(self.entry.get()), classification=str(self.dropdown.get()))
+        spwords(span=str(self.entry.get()), classification=str(self.dropdown.get()), verb = is_verb)
         self.entry.delete(0,CTk.END)
         self.dropdown.set('Word Type:')
         self.update_idletasks()
@@ -377,7 +464,7 @@ class Application(CTk.CTk):
     def setup(self):
         spanDirectory = os.path.join(os.path.expanduser('~'), 'spanData')
         if not os.path.exists(spanDirectory):
-            spwords('Español','Classification')
+            spwords('Español','Classification', 'verb?')
     
     # Postitioning of window opening for presentation
     def position_window(self, width, height):
