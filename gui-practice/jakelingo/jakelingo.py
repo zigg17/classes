@@ -8,6 +8,7 @@ import pandas as pd
 from spanishconjugator import Conjugator
 
 translator = Translator()
+print(Conjugator().conjugate('hablar', 'present', 'indicative'))
 
 class Cycle:
     def __init__(self, iterable):
@@ -168,6 +169,58 @@ def open_flashcards_window(category):
     }
     FlashcardsWindow(category=category.capitalize(), title=titles[category])
 
+class GridEntryWindow(CTk.CTkToplevel):
+    def __init__(self, category, title, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.resizable(False, False)
+        self.position_window(500, 400)
+        self.title(f"JakeLingo: {title}")
+
+        # Add a label on top of the grid
+        self.top_label = CTk.CTkLabel(self, text=f"Enter your {category.lower()} data", text_color='white', font=('Arial', 16))
+        self.top_label.pack(pady=10)
+
+        # Create a frame for the 3x2 grid of entry boxes
+        self.grid_frame = CTk.CTkFrame(self)
+        self.grid_frame.pack(pady=20)
+
+        # Create a 3x2 grid of entry boxes
+        self.entries = []
+        for row in range(3):
+            row_entries = []
+            for col in range(2):
+                entry = CTk.CTkEntry(self.grid_frame, width=200)
+                entry.grid(row=row, column=col, padx=10, pady=10)
+                row_entries.append(entry)
+            self.entries.append(row_entries)
+
+        # Add a submit button to the frame
+        self.submit_button = CTk.CTkButton(self, text="Submit", command=self.submit_verbs)
+        self.submit_button.pack(pady=10)
+
+    # Initializes relevant words
+        if len(lexicon(category).flashcard_list) == 0:
+            messagebox.showerror(title="Error", message="No available words.")
+            self.destroy()
+            return
+        else:
+            self.verbs = lexicon(category)
+
+    # Function to handle the submission of data
+    def submit_verbs(self):
+        data = [[entry.get() for entry in row] for row in self.entries]
+        messagebox.showinfo(title="Submitted Data", message=f"Data submitted: {data}")
+
+    # Helps incorporate window in the proper place
+    def position_window(self, width, height):
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        x = (screen_width / 2) - (width / 2)
+        y = (screen_height / 2) - (height / 2)
+        self.geometry('%dx%d+%d+%d' % (width, height, x, y))
+
+    
+
 # Add term class
 class addterm(CTk.CTkToplevel):
     def __init__(self, *args, **kwargs):
@@ -237,46 +290,7 @@ class addterm(CTk.CTkToplevel):
         self.update_idletasks()
         self.update()
 
-class GridEntryWindow(CTk.CTkToplevel):
-    def __init__(self, category, title, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.resizable(False, False)
-        self.position_window(500, 400)
-        self.title(f"JakeLingo: {title}")
 
-        # Add a label on top of the grid
-        self.top_label = ...
-
-        # Create a frame for the 3x2 grid of entry boxes
-        self.grid_frame = CTk.CTkFrame(self)
-        self.grid_frame.pack(pady=20)
-
-        # Create a 3x2 grid of entry boxes
-        self.entries = []
-        for row in range(3):
-            row_entries = []
-            for col in range(2):
-                entry = CTk.CTkEntry(self.grid_frame, width=200)
-                entry.grid(row=row, column=col, padx=10, pady=10)
-                row_entries.append(entry)
-            self.entries.append(row_entries)
-
-        # Add a submit button to the frame
-        self.submit_button = CTk.CTkButton(self, text="Submit", command=self.submit_data)
-        self.submit_button.pack(pady=10)
-
-    # Helps incorporate window in the proper place
-    def position_window(self, width, height):
-        screen_width = self.winfo_screenwidth()
-        screen_height = self.winfo_screenheight()
-        x = (screen_width / 2) - (width / 2)
-        y = (screen_height / 2) - (height / 2)
-        self.geometry('%dx%d+%d+%d' % (width, height, x, y))
-
-    # Function to handle the submission of data
-    def submit_data(self):
-        data = [[entry.get() for entry in row] for row in self.entries]
-        messagebox.showinfo(title="Submitted Data", message=f"Data submitted: {data}")
         
 # Final application to incorporate and run all of the code
 class Application(CTk.CTk):
