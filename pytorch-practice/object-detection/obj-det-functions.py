@@ -10,6 +10,7 @@ class corner_box:
         self.y2 = y2
         self.class_num = class_num
         self.probability = probability
+        self.apoptose = False
     
     # Allows for conversion to midpoint-type boxes
     def convert_to_midpoint(self):
@@ -30,6 +31,7 @@ class midpoint_box:
         self.height = height
         self.class_num = class_num
         self.probability = probability
+        self.apoptose = False
     
     # Allows for conversion to corner-type boxes
     def convert_to_corner(self):
@@ -76,7 +78,7 @@ def non_max_suppression(boxes: list, iou_threshold: float,
     boxes = sorted(boxes, key=lambda box: box.probability, reverse=True)
     
     for box in boxes:
-        for boxcheck in boxes:
+        for index, boxcheck in enumerate(boxes):
             # Skip if the same variable
             if(box is boxcheck):
                 continue
@@ -84,4 +86,7 @@ def non_max_suppression(boxes: list, iou_threshold: float,
             # Checks class number and iou thresholds and removes accordingly
             if(box.class_num == boxcheck.class_num & 
                (intersection_over_union(box, boxcheck) > iou_threshold)):
-                boxes.remove()
+                boxes[index].apoptose = True
+
+    final = [box for box in boxes if box.apoptose == False]
+    return final
