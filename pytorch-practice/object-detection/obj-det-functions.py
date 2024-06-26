@@ -72,4 +72,16 @@ def non_max_suppression(boxes: list, iou_threshold: float,
         if(box.probability < probability_threshold):
             boxes.remove(box)
 
+    # Sort the boxes according to the 
     boxes = sorted(boxes, key=lambda box: box.probability, reverse=True)
+    
+    for box in boxes:
+        for boxcheck in boxes:
+            # Skip if the same variable
+            if(box is boxcheck):
+                continue
+            
+            # Checks class number and iou thresholds and removes accordingly
+            if(box.class_num == boxcheck.class_num & 
+               (intersection_over_union(box, boxcheck) > iou_threshold)):
+                boxes.remove()
