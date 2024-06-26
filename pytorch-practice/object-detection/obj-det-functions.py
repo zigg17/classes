@@ -90,3 +90,7 @@ def non_max_suppression(boxes: list, iou_threshold: float,
 
     final = [box for box in boxes if box.apoptose == False]
     return final
+
+def mean_average_precision(pred_boxes: list, true_boxes: list, 
+                           iou_threshold: float, num_classes: int):
+    return
