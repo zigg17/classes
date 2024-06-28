@@ -75,7 +75,7 @@ def non_max_suppression(boxes: list, iou_threshold: float,
             boxes.remove(box)
 
     # Sort the boxes according to the 
-    boxes = sorted(boxes, key=lambda box: box.probability, reverse=True)
+    boxes = sorted(boxes, key=lambda box: (box.class_, -box.probability))
     
     for box in boxes:
         for index, boxcheck in enumerate(boxes):
@@ -93,4 +93,5 @@ def non_max_suppression(boxes: list, iou_threshold: float,
 
 def mean_average_precision(pred_boxes: list, true_boxes: list, 
                            iou_threshold: float, num_classes: int):
+    
     return
