@@ -16,4 +16,4 @@ A place in which I practiced coding UIs and their corresponding backends from th
     * Data engineering for future modeling using numpy and matplotlib.
     * Generation of linear regressions with scikit.
     * In-depth coursework with probability theory.
-
+    * 
