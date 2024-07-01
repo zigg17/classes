@@ -6,9 +6,9 @@ import customtkinter as CTk
 from tkinter import messagebox
 import pandas as pd
 from spanishconjugator import Conjugator
+import random
 
 translator = Translator()
-print(Conjugator().conjugate('hablar', 'present', 'indicative'))
 
 class Cycle:
     def __init__(self, iterable):
@@ -51,6 +51,21 @@ class lexicon:
         # Reading from save csv to pull data
         df = pd.read_csv(file_path)
 
+        if(word_type == 'Verb'):
+            df = df[df['verb?'] == True]
+            verb_df = pd.DataFrame(columns = ['yo', 'tu', 'el_ella_ud', 'nosotros', 'vosotros', 'ellos_ellas_uds'])
+            print(verb_df.head())
+            for x in range(len(df)):
+                conjugate_dict = Conjugator().conjugate(df.iloc[x,0],'present','indicative')
+                yo = conjugate_dict['yo']
+                tu = conjugate_dict['tu']
+                el_ella_ud = conjugate_dict['el/ella/usted']
+                nosotros = conjugate_dict['nosotros']
+                vosotros = conjugate_dict['vosotros']
+                ellos_ellas_uds = conjugate_dict['ellos/ellas/ustedes']
+                verb_df.loc[len(verb_df)] = [yo, tu, el_ella_ud, nosotros, vosotros, ellos_ellas_uds]
+
+            print(verb_df.head())
         # Allows for users to go through entirety of word deck if they desire
         if(word_type != 'All'):
             df = df[df['Classification'] == word_type]
@@ -62,7 +77,8 @@ class lexicon:
         self.spanish_words = list(df.iloc[:, 0])
         
         # Converting class to flashcards
-        self.flashcard_list = [flashcard(self.english_words[x], self.spanish_words[x]) for x in range(len(self.english_words))]
+        self.flashcard_list = [flashcard(self.english_words[x],
+                                                        self.spanish_words[x]) for x in range(len(self.english_words))]
 
 # Spanish translatore utilizing google translate
 def spanTrans(text_to_translate):
@@ -112,7 +128,7 @@ class FlashcardsWindow(CTk.CTkToplevel):
             self.destroy()
             return
         else:
-            self.flashcards = Cycle(lexicon(category).flashcard_list)
+            self.flashcards = Cycle(random.sample(lexicon(category).flashcard_list, len(lexicon(category).flashcard_list)))
 
         # Create a frame to contain the buttons
         self.button_frame = CTk.CTkFrame(self)
@@ -170,14 +186,17 @@ def open_flashcards_window(category):
     FlashcardsWindow(category=category.capitalize(), title=titles[category])
 
 class GridEntryWindow(CTk.CTkToplevel):
-    def __init__(self, category, title, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.resizable(False, False)
-        self.position_window(500, 400)
-        self.title(f"JakeLingo: {title}")
+        self.position_window(500, 300)
+        self.title("JakeLingo: Verb Practice")
+
+        verb_lexicon = lexicon('Verb')
+
 
         # Add a label on top of the grid
-        self.top_label = CTk.CTkLabel(self, text=f"Enter your {category.lower()} data", text_color='white', font=('Arial', 16))
+        self.top_label = CTk.CTkLabel(self, text="Enter your data", text_color='white', font=('Arial', 16))
         self.top_label.pack(pady=10)
 
         # Create a frame for the 3x2 grid of entry boxes
@@ -197,14 +216,6 @@ class GridEntryWindow(CTk.CTkToplevel):
         # Add a submit button to the frame
         self.submit_button = CTk.CTkButton(self, text="Submit", command=self.submit_verbs)
         self.submit_button.pack(pady=10)
-
-    # Initializes relevant words
-        if len(lexicon(category).flashcard_list) == 0:
-            messagebox.showerror(title="Error", message="No available words.")
-            self.destroy()
-            return
-        else:
-            self.verbs = lexicon(category)
 
     # Function to handle the submission of data
     def submit_verbs(self):
@@ -290,8 +301,6 @@ class addterm(CTk.CTkToplevel):
         self.update_idletasks()
         self.update()
 
-
-        
 # Final application to incorporate and run all of the code
 class Application(CTk.CTk):
     def __init__(self, *args, **kwargs):
@@ -311,10 +320,13 @@ class Application(CTk.CTk):
 
         # Create three frames with borders across the middle
         addButton = CTk.CTkButton(self, text="Add Term", command= lambda:self.open_term())
-        addButton.place(x=200, y=390)
+        addButton.place(x=80, y=390)
+
+        addButton = CTk.CTkButton(self, text="Practice Verbs", command= lambda:self.open_verbs())
+        addButton.place(x=330, y=390)
 
         addButton1 = CTk.CTkButton(self, text="Practice All", command= lambda:self.open_flashcards('all'))
-        addButton1.place(x=450, y=390)
+        addButton1.place(x=580, y=390)
 
        # Conversational frame
         frame1 = CTk.CTkFrame(self, width=200, height=300, fg_color='white')
@@ -322,11 +334,9 @@ class Application(CTk.CTk):
         label1 = CTk.CTkLabel(frame1, text="Conversational", text_color='black', font=("Helvetica", 12))
         label1.place(relx=0.5, rely=0.1, anchor='center')
         button1_flashcards = CTk.CTkButton(frame1, text="Flashcards", command=lambda: self.open_flashcards('conversational'))
-        button1_flashcards.place(relx=0.5, rely=0.3, anchor='center')
+        button1_flashcards.place(relx=0.5, rely=0.35, anchor='center')
         button1_writing = CTk.CTkButton(frame1, text="Writing")
-        button1_writing.place(relx=0.5, rely=0.55, anchor='center')
-        button1_verb_practice = CTk.CTkButton(frame1, text="Verb Practice", command=lambda: self.open_grid_entry_window('conversational'))
-        button1_verb_practice.place(relx=0.5, rely=0.8, anchor='center')
+        button1_writing.place(relx=0.5, rely=0.75, anchor='center')
 
         # Scientific frame
         frame2 = CTk.CTkFrame(self, width=200, height=300, fg_color='white')
@@ -334,11 +344,9 @@ class Application(CTk.CTk):
         label2 = CTk.CTkLabel(frame2, text="Scientific", text_color='black', font=("Helvetica", 12))
         label2.place(relx=0.5, rely=0.1, anchor='center')
         button2_flashcards = CTk.CTkButton(frame2, text="Flashcards", command=lambda: self.open_flashcards('scientific'))
-        button2_flashcards.place(relx=0.5, rely=0.3, anchor='center')
+        button2_flashcards.place(relx=0.5, rely=0.35, anchor='center')
         button2_writing = CTk.CTkButton(frame2, text="Writing")
-        button2_writing.place(relx=0.5, rely=0.55, anchor='center')
-        button2_verb_practice = CTk.CTkButton(frame2, text="Verb Practice", command=lambda: self.open_grid_entry_window('scientific'))
-        button2_verb_practice.place(relx=0.5, rely=0.8, anchor='center')
+        button2_writing.place(relx=0.5, rely=0.75, anchor='center')
 
         # Advanced frame
         frame3 = CTk.CTkFrame(self, width=200, height=300, fg_color='white')
@@ -346,11 +354,10 @@ class Application(CTk.CTk):
         label3 = CTk.CTkLabel(frame3, text="Advanced", text_color='black', font=("Helvetica", 12))
         label3.place(relx=0.5, rely=0.1, anchor='center')
         button3_flashcards = CTk.CTkButton(frame3, text="Flashcards", command=lambda: self.open_flashcards('advanced'))
-        button3_flashcards.place(relx=0.5, rely=0.3, anchor='center')
+        button3_flashcards.place(relx=0.5, rely=0.35, anchor='center')
         button3_writing = CTk.CTkButton(frame3, text="Writing")
-        button3_writing.place(relx=0.5, rely=0.55, anchor='center')
-        button3_verb_practice = CTk.CTkButton(frame3, text="Verb Practice", command=lambda: self.open_grid_entry_window('advanced'))
-        button3_verb_practice.place(relx=0.5, rely=0.80, anchor='center')
+        button3_writing.place(relx=0.5, rely=0.75, anchor='center')
+
 
     
     # Responsible for setting up the directory if there isn't any
@@ -384,14 +391,6 @@ class Application(CTk.CTk):
                 self.toplevel_window = open_flashcards_window('advanced')  # create window if its None or destroyed
         else:
             self.toplevel_window.focus()  # if window exists focus it
-        
-    def open_grid_entry_window(self, category):
-        titles = {
-            'conversational': 'Conversational',
-            'scientific': 'Scientific',
-            'advanced': 'Advanced'
-        }
-        GridEntryWindow(category=category.capitalize(), title=titles[category])
     
     # Responsible for opening the "add term window"
     def open_term(self):
@@ -401,6 +400,15 @@ class Application(CTk.CTk):
             self.toplevel_window.grab_set()
         else:
             self.toplevel_window.focus()  # if window exists focus it
+
+    def open_verbs(self):
+        # Opens window if there isnt one already
+        if self.toplevel_window is None or not self.toplevel_window.winfo_exists():   
+            self.toplevel_window = GridEntryWindow()  # create window if its None or destroyed
+            self.toplevel_window.grab_set()
+        else:
+            self.toplevel_window.focus()  # if window exists focus it
+
 
 # Final loop for application
 if __name__ == "__main__":
