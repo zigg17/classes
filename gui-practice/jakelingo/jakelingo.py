@@ -36,7 +36,7 @@ class flashcard:
         self.spanish_side = spanish_word
 
 class lexicon:
-    def __init__(self, word_type: str):
+    def __init__(self, word_type: str, verb_tense = None):
         app_data_directory = os.path.join(os.path.expanduser('~'), 'spanData')
 
         # Create the directory if it doesn't exist
@@ -53,19 +53,19 @@ class lexicon:
 
         if(word_type == 'Verb'):
             df = df[df['verb?'] == True]
-            verb_df = pd.DataFrame(columns = ['yo', 'tu', 'el_ella_ud', 'nosotros', 'vosotros', 'ellos_ellas_uds'])
-            print(verb_df.head())
+            verb_df = pd.DataFrame(columns = ['inf', 'yo', 'tu', 'el_ella_ud', 'nosotros', 'vosotros', 'ellos_ellas_uds'])
             for x in range(len(df)):
-                conjugate_dict = Conjugator().conjugate(df.iloc[x,0],'present','indicative')
+                conjugate_dict = Conjugator().conjugate(df.iloc[x,0],verb_tense,'indicative')
+                inf = df.iloc[x,0]
                 yo = conjugate_dict['yo']
                 tu = conjugate_dict['tu']
                 el_ella_ud = conjugate_dict['el/ella/usted']
                 nosotros = conjugate_dict['nosotros']
                 vosotros = conjugate_dict['vosotros']
                 ellos_ellas_uds = conjugate_dict['ellos/ellas/ustedes']
-                verb_df.loc[len(verb_df)] = [yo, tu, el_ella_ud, nosotros, vosotros, ellos_ellas_uds]
-
-            print(verb_df.head())
+                verb_df.loc[len(verb_df)] = [inf, yo, tu, el_ella_ud, nosotros, vosotros, ellos_ellas_uds]
+            
+            self.verb_df = verb_df
         # Allows for users to go through entirety of word deck if they desire
         if(word_type != 'All'):
             df = df[df['Classification'] == word_type]
@@ -185,18 +185,43 @@ def open_flashcards_window(category):
     }
     FlashcardsWindow(category=category.capitalize(), title=titles[category])
 
+class VerbTenseSelectionWindow(CTk.CTkToplevel):
+    def __init__(self, parent, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.parent = parent
+        self.resizable(False, False)
+        self.position_window(300, 155)
+        self.title("Select Verb Tense")
+
+        tenses = ['present', 'preterite', 'imperfect', 'future']
+        for i, tense in enumerate(tenses):
+            button = CTk.CTkButton(self, text=tense.capitalize(), command=lambda t=tense: self.select_tense(t))
+            button.pack(pady=5, padx=10, fill="x")
+
+    def select_tense(self, tense):
+        self.parent.verb_tense = tense
+        self.destroy()
+        GridEntryWindow(verb_tense=tense)
+
+    def position_window(self, width, height):
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        x = (screen_width / 2) - (width / 2)
+        y = (screen_height / 2) - (height / 2)
+        self.geometry('%dx%d+%d+%d' % (width, height, x, y))
+
 class GridEntryWindow(CTk.CTkToplevel):
-    def __init__(self):
+    def __init__(self, verb_tense='present'):
         super().__init__()
+        self.verb_tense = verb_tense
         self.resizable(False, False)
         self.position_window(500, 300)
-        self.title("JakeLingo: Verb Practice")
+        self.title(f"JakeLingo: Verb Practice ({verb_tense.capitalize()})")
 
-        verb_lexicon = lexicon('Verb')
-
+        verb_lexicon = lexicon('Verb', verb_tense)
 
         # Add a label on top of the grid
-        self.top_label = CTk.CTkLabel(self, text="Enter your data", text_color='white', font=('Arial', 16))
+        self.top_label = CTk.CTkLabel(self, text=f"Enter your data for {verb_tense.capitalize()} tense", text_color='white', font=('Arial', 16))
         self.top_label.pack(pady=10)
 
         # Create a frame for the 3x2 grid of entry boxes
@@ -229,8 +254,6 @@ class GridEntryWindow(CTk.CTkToplevel):
         x = (screen_width / 2) - (width / 2)
         y = (screen_height / 2) - (height / 2)
         self.geometry('%dx%d+%d+%d' % (width, height, x, y))
-
-    
 
 # Add term class
 class addterm(CTk.CTkToplevel):
@@ -402,13 +425,12 @@ class Application(CTk.CTk):
             self.toplevel_window.focus()  # if window exists focus it
 
     def open_verbs(self):
-        # Opens window if there isnt one already
+        # Opens verb tense selection window if there isn't one already
         if self.toplevel_window is None or not self.toplevel_window.winfo_exists():   
-            self.toplevel_window = GridEntryWindow()  # create window if its None or destroyed
+            self.toplevel_window = VerbTenseSelectionWindow(self)  # create window if its None or destroyed
             self.toplevel_window.grab_set()
         else:
             self.toplevel_window.focus()  # if window exists focus it
-
 
 # Final loop for application
 if __name__ == "__main__":
