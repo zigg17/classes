@@ -35,6 +35,19 @@ class flashcard:
         self.english_side = english_word
         self.spanish_side = spanish_word
 
+class verb_unit:
+    def __init__(self, english_word: str, inf: str, yo: str,
+                 tu: str, el_ella_ud: str, nosotros: str,
+                 vosotros: str, ellos_ellas_uds: str):
+        self.english_word = english_word
+        self.inf = inf
+        self.yo = yo
+        self.tu = tu
+        self.el_ella_ud = el_ella_ud
+        self.nosotros  = nosotros
+        self.vosotros = vosotros
+        self.ellos_ellas_uds = ellos_ellas_uds
+
 class lexicon:
     def __init__(self, word_type: str, verb_tense = None):
         app_data_directory = os.path.join(os.path.expanduser('~'), 'spanData')
