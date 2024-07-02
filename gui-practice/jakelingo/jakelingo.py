@@ -66,9 +66,10 @@ class lexicon:
 
         if(word_type == 'Verb'):
             df = df[df['verb?'] == True]
-            verb_df = pd.DataFrame(columns = ['inf', 'yo', 'tu', 'el_ella_ud', 'nosotros', 'vosotros', 'ellos_ellas_uds'])
+            verb_objects = []
             for x in range(len(df)):
                 conjugate_dict = Conjugator().conjugate(df.iloc[x,0],verb_tense,'indicative')
+                english_word = df.iloc[x,1]
                 inf = df.iloc[x,0]
                 yo = conjugate_dict['yo']
                 tu = conjugate_dict['tu']
@@ -76,9 +77,12 @@ class lexicon:
                 nosotros = conjugate_dict['nosotros']
                 vosotros = conjugate_dict['vosotros']
                 ellos_ellas_uds = conjugate_dict['ellos/ellas/ustedes']
-                verb_df.loc[len(verb_df)] = [inf, yo, tu, el_ella_ud, nosotros, vosotros, ellos_ellas_uds]
+                verb_objects.append(verb_unit(english_word, inf, yo, tu,
+                                              el_ella_ud, nosotros, 
+                                              vosotros, ellos_ellas_uds))
             
-            self.verb_df = verb_df
+            self.verb_objects = verb_objects
+        
         # Allows for users to go through entirety of word deck if they desire
         if(word_type != 'All'):
             df = df[df['Classification'] == word_type]
@@ -231,10 +235,11 @@ class GridEntryWindow(CTk.CTkToplevel):
         self.position_window(500, 300)
         self.title(f"JakeLingo: Verb Practice ({verb_tense.capitalize()})")
 
-        verb_lexicon = lexicon('Verb', verb_tense)
+        self.verb_list = Cycle(random.sample(lexicon('Verb', verb_tense).verb_objects, 
+                                  len(lexicon('Verb', verb_tense).verb_objects)))
 
         # Add a label on top of the grid
-        self.top_label = CTk.CTkLabel(self, text=f"Enter your data for {verb_tense.capitalize()} tense", text_color='white', font=('Arial', 16))
+        self.top_label = CTk.CTkLabel(self, text=f"{self.verb_list.next().inf}", text_color='white', font=('Arial', 16))
         self.top_label.pack(pady=10)
 
         # Create a frame for the 3x2 grid of entry boxes
@@ -252,13 +257,87 @@ class GridEntryWindow(CTk.CTkToplevel):
             self.entries.append(row_entries)
 
         # Add a submit button to the frame
-        self.submit_button = CTk.CTkButton(self, text="Submit", command=self.submit_verbs)
+        self.submit_button = CTk.CTkButton(self, text="Submit", command=lambda: self.submit_verbs())
         self.submit_button.pack(pady=10)
 
     # Function to handle the submission of data
     def submit_verbs(self):
-        data = [[entry.get() for entry in row] for row in self.entries]
-        messagebox.showinfo(title="Submitted Data", message=f"Data submitted: {data}")
+        # Replace entry boxes with labels
+        for row in range(3):
+            for col in range(2):
+                entry = self.entries[row][col]
+                entry_text = self.entries[row][col].get()
+                entry.grid_forget()
+
+                if (row == 0 and col== 0):
+                    if (entry_text == self.verb_list.current().yo):
+                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                        label.grid(row=row, column=col, padx=10, pady=10)
+                    else:
+                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                        label.grid(row=row, column=col, padx=10, pady=10)
+                elif (row == 0 and col== 1):
+                    if (entry_text == self.verb_list.current().nosotros):
+                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                        label.grid(row=row, column=col, padx=10, pady=10)
+                    else:
+                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                        label.grid(row=row, column=col, padx=10, pady=10)
+                elif (row == 1 and col== 0):
+                    if (entry_text == self.verb_list.current().tu):
+                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                        label.grid(row=row, column=col, padx=10, pady=10)
+                    else:
+                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                        label.grid(row=row, column=col, padx=10, pady=10)
+                elif (row == 1 and col== 1):
+                    if (entry_text == self.verb_list.current().vosotros):
+                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                        label.grid(row=row, column=col, padx=10, pady=10)
+                    else:
+                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                        label.grid(row=row, column=col, padx=10, pady=10)
+                elif (row == 2 and col== 0):
+                    if (entry_text == self.verb_list.current().el_ella_ud):
+                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                        label.grid(row=row, column=col, padx=10, pady=10)
+                    else:
+                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                        label.grid(row=row, column=col, padx=10, pady=10)
+                elif (row == 2 and col== 1):
+                    if (entry_text == self.verb_list.current().ellos_ellas_uds):
+                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                        label.grid(row=row, column=col, padx=10, pady=10)
+                    else:
+                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                        label.grid(row=row, column=col, padx=10, pady=10)
+                else: 
+                    continue
+    
+        self.submit_button.pack_forget()
+        self.submit_button = CTk.CTkButton(self, text="Continue", command=lambda: self.continue_action())
+        self.submit_button.pack(pady=10)
+    
+    # Function to handle the continue action
+    def continue_action(self):
+        self.top_label.configure(text=f"{self.verb_list.next().inf}")
+        self.grid_frame.pack_forget()
+        self.grid_frame = CTk.CTkFrame(self)
+        self.grid_frame.pack(pady=20)
+
+        # Create a new 3x2 grid of entry boxes
+        self.entries = []
+        for row in range(3):
+            row_entries = []
+            for col in range(2):
+                entry = CTk.CTkEntry(self.grid_frame, width=200)
+                entry.grid(row=row, column=col, padx=10, pady=10)
+                row_entries.append(entry)
+            self.entries.append(row_entries)
+        
+        self.submit_button.pack_forget()
+        self.submit_button = CTk.CTkButton(self, text="Submit", command=lambda: self.submit_verbs())
+        self.submit_button.pack(pady=10)
 
     # Helps incorporate window in the proper place
     def position_window(self, width, height):
@@ -267,6 +346,7 @@ class GridEntryWindow(CTk.CTkToplevel):
         x = (screen_width / 2) - (width / 2)
         y = (screen_height / 2) - (height / 2)
         self.geometry('%dx%d+%d+%d' % (width, height, x, y))
+
 
 # Add term class
 class addterm(CTk.CTkToplevel):
