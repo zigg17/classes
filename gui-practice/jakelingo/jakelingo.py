@@ -71,12 +71,12 @@ class lexicon:
                 conjugate_dict = Conjugator().conjugate(df.iloc[x,0],verb_tense,'indicative')
                 english_word = df.iloc[x,1]
                 inf = df.iloc[x,0]
-                yo = conjugate_dict['yo']
-                tu = conjugate_dict['tu']
-                el_ella_ud = conjugate_dict['el/ella/usted']
-                nosotros = conjugate_dict['nosotros']
-                vosotros = conjugate_dict['vosotros']
-                ellos_ellas_uds = conjugate_dict['ellos/ellas/ustedes']
+                yo = conjugate_dict['yo'].encode('latin1').decode('utf-8')
+                tu = conjugate_dict['tu'].encode('latin1').decode('utf-8')
+                el_ella_ud = conjugate_dict['el/ella/usted'].encode('latin1').decode('utf-8')
+                nosotros = conjugate_dict['nosotros'].encode('latin1').decode('utf-8')
+                vosotros = conjugate_dict['vosotros'].encode('latin1').decode('utf-8')
+                ellos_ellas_uds = conjugate_dict['ellos/ellas/ustedes'].encode('latin1').decode('utf-8')
                 verb_objects.append(verb_unit(english_word, inf, yo, tu,
                                               el_ella_ud, nosotros, 
                                               vosotros, ellos_ellas_uds))
@@ -239,7 +239,7 @@ class GridEntryWindow(CTk.CTkToplevel):
                                   len(lexicon('Verb', verb_tense).verb_objects)))
 
         # Add a label on top of the grid
-        self.top_label = CTk.CTkLabel(self, text=f"{self.verb_list.next().inf}", text_color='white', font=('Arial', 16))
+        self.top_label = CTk.CTkLabel(self, text=f"{self.verb_list.current().inf}", text_color='white', font=('Arial', 16))
         self.top_label.pack(pady=10)
 
         # Create a frame for the 3x2 grid of entry boxes
@@ -270,46 +270,58 @@ class GridEntryWindow(CTk.CTkToplevel):
                 entry.grid_forget()
 
                 if (row == 0 and col== 0):
-                    if (entry_text == self.verb_list.current().yo):
-                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                    if (entry_text.lower() == self.verb_list.current().yo.lower()):
+                        label = CTk.CTkLabel(self.grid_frame, text= entry_text.lower(),
+                                             text_color='green')
                         label.grid(row=row, column=col, padx=10, pady=10)
                     else:
-                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                        label = CTk.CTkLabel(self.grid_frame, text= self.verb_list.current().yo.lower(),
+                                             text_color = 'red')
                         label.grid(row=row, column=col, padx=10, pady=10)
                 elif (row == 0 and col== 1):
-                    if (entry_text == self.verb_list.current().nosotros):
-                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                    if (entry_text.lower() == self.verb_list.current().nosotros.lower()):
+                        label = CTk.CTkLabel(self.grid_frame, text= entry_text.lower(),
+                                             text_color= 'green')
                         label.grid(row=row, column=col, padx=10, pady=10)
                     else:
-                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                        label = CTk.CTkLabel(self.grid_frame, text= self.verb_list.current().nosotros.lower(),
+                                             text_color= 'red')
                         label.grid(row=row, column=col, padx=10, pady=10)
                 elif (row == 1 and col== 0):
-                    if (entry_text == self.verb_list.current().tu):
-                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                    if (entry_text.lower() == self.verb_list.current().tu.lower()):
+                        label = CTk.CTkLabel(self.grid_frame, text= entry_text.lower(),
+                                             text_color= 'green')
                         label.grid(row=row, column=col, padx=10, pady=10)
                     else:
-                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                        label = CTk.CTkLabel(self.grid_frame, text= self.verb_list.current().tu.lower(),
+                                             text_color = 'red')
                         label.grid(row=row, column=col, padx=10, pady=10)
                 elif (row == 1 and col== 1):
-                    if (entry_text == self.verb_list.current().vosotros):
-                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                    if (entry_text.lower() == self.verb_list.current().vosotros.lower()):
+                        label = CTk.CTkLabel(self.grid_frame, text= entry_text.lower(),
+                                             text_color = 'green')
                         label.grid(row=row, column=col, padx=10, pady=10)
                     else:
-                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                        label = CTk.CTkLabel(self.grid_frame, text= self.verb_list.current().vosotros.lower(),
+                                             text_color = 'red')
                         label.grid(row=row, column=col, padx=10, pady=10)
                 elif (row == 2 and col== 0):
-                    if (entry_text == self.verb_list.current().el_ella_ud):
-                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                    if (entry_text.lower() == self.verb_list.current().el_ella_ud.lower()):
+                        label = CTk.CTkLabel(self.grid_frame, text= entry_text.lower(),
+                                             text_color = 'green')
                         label.grid(row=row, column=col, padx=10, pady=10)
                     else:
-                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                        label = CTk.CTkLabel(self.grid_frame, text=self.verb_list.current().el_ella_ud.lower(),
+                                             text_color = 'red')
                         label.grid(row=row, column=col, padx=10, pady=10)
                 elif (row == 2 and col== 1):
-                    if (entry_text == self.verb_list.current().ellos_ellas_uds):
-                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                    if (entry_text.lower() == self.verb_list.current().ellos_ellas_uds.lower()):
+                        label = CTk.CTkLabel(self.grid_frame, text= entry_text.lower(),
+                                             text_color = 'green')
                         label.grid(row=row, column=col, padx=10, pady=10)
                     else:
-                        label = CTk.CTkLabel(self.grid_frame, text= '')
+                        label = CTk.CTkLabel(self.grid_frame, text= self.verb_list.current().ellos_ellas_uds.lower(),
+                                             text_color= 'red')
                         label.grid(row=row, column=col, padx=10, pady=10)
                 else: 
                     continue
@@ -320,7 +332,7 @@ class GridEntryWindow(CTk.CTkToplevel):
     
     # Function to handle the continue action
     def continue_action(self):
-        self.top_label.configure(text=f"{self.verb_list.next().inf}")
+        self.top_label.configure(text=f"{self.verb_list.current().inf}")
         self.grid_frame.pack_forget()
         self.grid_frame = CTk.CTkFrame(self)
         self.grid_frame.pack(pady=20)
@@ -338,6 +350,7 @@ class GridEntryWindow(CTk.CTkToplevel):
         self.submit_button.pack_forget()
         self.submit_button = CTk.CTkButton(self, text="Submit", command=lambda: self.submit_verbs())
         self.submit_button.pack(pady=10)
+        self.verb_list.next()
 
     # Helps incorporate window in the proper place
     def position_window(self, width, height):
