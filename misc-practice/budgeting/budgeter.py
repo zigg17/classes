@@ -226,18 +226,3 @@ class budget:
         except ValueError as e:
             print(f"An error occurred: {e}")
 
-if __name__ == "__main__":
-    
-
-    total_income = incomes()
-
-    website = income('Passive', 'Underwater Basket Weaving Instructor', 30, 'weekly')
-    total_income.add_expense(website)
-
-    baratta = income('Active', 'Gamer', 200, 'weekly')
-    total_income.add_expense(baratta)
-
-    total_budget = budget()
-    total_budget.add_table(total_income)
-    total_budget.add_table(total_expenses)
-    total_budget.run_analysis()
