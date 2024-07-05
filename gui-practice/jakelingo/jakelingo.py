@@ -329,6 +329,7 @@ class GridEntryWindow(CTk.CTkToplevel):
         self.submit_button.pack_forget()
         self.submit_button = CTk.CTkButton(self, text="Continue", command=lambda: self.continue_action())
         self.submit_button.pack(pady=10)
+        self.verb_list.next()
     
     # Function to handle the continue action
     def continue_action(self):
@@ -350,7 +351,6 @@ class GridEntryWindow(CTk.CTkToplevel):
         self.submit_button.pack_forget()
         self.submit_button = CTk.CTkButton(self, text="Submit", command=lambda: self.submit_verbs())
         self.submit_button.pack(pady=10)
-        self.verb_list.next()
 
     # Helps incorporate window in the proper place
     def position_window(self, width, height):
@@ -463,9 +463,11 @@ class Application(CTk.CTk):
         label1 = CTk.CTkLabel(frame1, text="Conversational", text_color='black', font=("Helvetica", 12))
         label1.place(relx=0.5, rely=0.1, anchor='center')
         button1_flashcards = CTk.CTkButton(frame1, text="Flashcards", command=lambda: self.open_flashcards('conversational'))
-        button1_flashcards.place(relx=0.5, rely=0.35, anchor='center')
+        button1_flashcards.place(relx=0.5, rely=0.3, anchor='center')
+        button1_reading = CTk.CTkButton(frame1, text="Reading")
+        button1_reading.place(relx=0.5, rely=0.5, anchor='center')
         button1_writing = CTk.CTkButton(frame1, text="Writing")
-        button1_writing.place(relx=0.5, rely=0.75, anchor='center')
+        button1_writing.place(relx=0.5, rely=0.7, anchor='center')
 
         # Scientific frame
         frame2 = CTk.CTkFrame(self, width=200, height=300, fg_color='white')
@@ -473,9 +475,11 @@ class Application(CTk.CTk):
         label2 = CTk.CTkLabel(frame2, text="Scientific", text_color='black', font=("Helvetica", 12))
         label2.place(relx=0.5, rely=0.1, anchor='center')
         button2_flashcards = CTk.CTkButton(frame2, text="Flashcards", command=lambda: self.open_flashcards('scientific'))
-        button2_flashcards.place(relx=0.5, rely=0.35, anchor='center')
+        button2_flashcards.place(relx=0.5, rely=0.3, anchor='center')
+        button2_reading = CTk.CTkButton(frame2, text="Reading")
+        button2_reading.place(relx=0.5, rely=0.5, anchor='center')
         button2_writing = CTk.CTkButton(frame2, text="Writing")
-        button2_writing.place(relx=0.5, rely=0.75, anchor='center')
+        button2_writing.place(relx=0.5, rely=0.7, anchor='center')
 
         # Advanced frame
         frame3 = CTk.CTkFrame(self, width=200, height=300, fg_color='white')
@@ -483,9 +487,12 @@ class Application(CTk.CTk):
         label3 = CTk.CTkLabel(frame3, text="Advanced", text_color='black', font=("Helvetica", 12))
         label3.place(relx=0.5, rely=0.1, anchor='center')
         button3_flashcards = CTk.CTkButton(frame3, text="Flashcards", command=lambda: self.open_flashcards('advanced'))
-        button3_flashcards.place(relx=0.5, rely=0.35, anchor='center')
+        button3_flashcards.place(relx=0.5, rely=0.3, anchor='center')
+        button3_reading = CTk.CTkButton(frame3, text="Reading")
+        button3_reading.place(relx=0.5, rely=0.5, anchor='center')
         button3_writing = CTk.CTkButton(frame3, text="Writing")
-        button3_writing.place(relx=0.5, rely=0.75, anchor='center')
+        button3_writing.place(relx=0.5, rely=0.7, anchor='center')
+
 
 
     
