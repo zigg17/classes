@@ -227,22 +227,7 @@ class budget:
             print(f"An error occurred: {e}")
 
 if __name__ == "__main__":
-    total_expenses = expenses()
-
-    the_root = expense('Food/Beverage', 'The Root', 100, 'daily')
-    total_expenses.add_expense(the_root)
-
-    rent = expense('Housing', 'Rent', 8000, 'monthly')
-    total_expenses.add_expense(rent)
-
-    groceries = expense('Food/Beverage', 'Uranium', 500, 'weekly')
-    total_expenses.add_expense(groceries)
-
-    eating_out = expense('Food/Beverage', 'Eating Out', 10, 'monthly')
-    total_expenses.add_expense(eating_out)
-
-    gas = expense('Transportation', 'Gasoline', 1000, 'monthly')
-    total_expenses.add_expense(gas)
+    
 
     total_income = incomes()
 
