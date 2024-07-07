@@ -465,9 +465,9 @@ class Application(CTk.CTk):
         button1_flashcards = CTk.CTkButton(frame1, text="Flashcards", command=lambda: self.open_flashcards('conversational'))
         button1_flashcards.place(relx=0.5, rely=0.3, anchor='center')
         button1_reading = CTk.CTkButton(frame1, text="Reading")
-        button1_reading.place(relx=0.5, rely=0.5, anchor='center')
+        button1_reading.place(relx=0.5, rely=0.55, anchor='center')
         button1_writing = CTk.CTkButton(frame1, text="Writing")
-        button1_writing.place(relx=0.5, rely=0.7, anchor='center')
+        button1_writing.place(relx=0.5, rely=0.8, anchor='center')
 
         # Scientific frame
         frame2 = CTk.CTkFrame(self, width=200, height=300, fg_color='white')
@@ -477,9 +477,9 @@ class Application(CTk.CTk):
         button2_flashcards = CTk.CTkButton(frame2, text="Flashcards", command=lambda: self.open_flashcards('scientific'))
         button2_flashcards.place(relx=0.5, rely=0.3, anchor='center')
         button2_reading = CTk.CTkButton(frame2, text="Reading")
-        button2_reading.place(relx=0.5, rely=0.5, anchor='center')
+        button2_reading.place(relx=0.5, rely=0.55, anchor='center')
         button2_writing = CTk.CTkButton(frame2, text="Writing")
-        button2_writing.place(relx=0.5, rely=0.7, anchor='center')
+        button2_writing.place(relx=0.5, rely=0.8, anchor='center')
 
         # Advanced frame
         frame3 = CTk.CTkFrame(self, width=200, height=300, fg_color='white')
@@ -489,9 +489,9 @@ class Application(CTk.CTk):
         button3_flashcards = CTk.CTkButton(frame3, text="Flashcards", command=lambda: self.open_flashcards('advanced'))
         button3_flashcards.place(relx=0.5, rely=0.3, anchor='center')
         button3_reading = CTk.CTkButton(frame3, text="Reading")
-        button3_reading.place(relx=0.5, rely=0.5, anchor='center')
+        button3_reading.place(relx=0.5, rely=0.55, anchor='center')
         button3_writing = CTk.CTkButton(frame3, text="Writing")
-        button3_writing.place(relx=0.5, rely=0.7, anchor='center')
+        button3_writing.place(relx=0.5, rely=0.8, anchor='center')
 
 
 
