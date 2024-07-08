@@ -107,12 +107,20 @@ class library:
             os.makedirs(library_directory)
 
         # List to hold file paths
-        file_paths = []
+        self.file_paths = []
 
         # Loop through files in the directory and add their paths to the list
         for file_path in glob.glob(os.path.join(library_directory, '*')):
-            file_paths.append(file_path)
-            print(file_path)
+            self.file_paths.append(file_path)
+        
+        # List to hold file contents
+        self.file_contents = []
+
+        # Loop through each file path and read the content into a string
+        for file_path in self.file_paths:
+            with open(file_path, 'r') as file:
+                data = file.read()
+                self.file_contents.append(data)      
 
 
 # Spanish translatore utilizing google translate
@@ -505,7 +513,7 @@ class Application(CTk.CTk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         app_library = library()
-        
+
         # Initialize app settings
         CTk.set_appearance_mode('dark')
         self.title("JakeLingo")
