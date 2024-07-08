@@ -7,6 +7,7 @@ from tkinter import messagebox
 import pandas as pd
 from spanishconjugator import Conjugator
 import random
+import glob
 
 translator = Translator()
 
@@ -96,6 +97,23 @@ class lexicon:
         # Converting class to flashcards
         self.flashcard_list = [flashcard(self.english_words[x],
                                                         self.spanish_words[x]) for x in range(len(self.english_words))]
+        
+class library: 
+    def __init__(self):
+        app_data_directory = os.path.join(os.path.expanduser('~'), 'spanData')
+        library_directory = os.path.join(app_data_directory, 'library')
+        
+        if not os.path.exists(library_directory):
+            os.makedirs(library_directory)
+
+        # List to hold file paths
+        file_paths = []
+
+        # Loop through files in the directory and add their paths to the list
+        for file_path in glob.glob(os.path.join(library_directory, '*')):
+            file_paths.append(file_path)
+            print(file_path)
+
 
 # Spanish translatore utilizing google translate
 def spanTrans(text_to_translate):
@@ -254,15 +272,15 @@ class ReadingTopLevel(CTk.CTkToplevel):
         self.button_frame.pack(side='bottom', fill='x', pady=10)
         
         # Left button
-        self.left_button = CTk.CTkButton(self.button_frame, text="Previous", command=self.navigate_to_previous)
+        self.left_button = CTk.CTkButton(self.button_frame, text="Previous", command=lambda: self.navigate_to_previous())
         self.left_button.place(relx=0.2, rely=0.5, anchor='center')
         
         # Add Term button
-        self.add_term_button = CTk.CTkButton(self.button_frame, text="Add Term", command=self.open_add_term_window)
+        self.add_term_button = CTk.CTkButton(self.button_frame, text="Add Term", command=lambda: self.open_add_term_window())
         self.add_term_button.place(relx=0.5, rely=0.5, anchor='center')
         
         # Right button
-        self.right_button = CTk.CTkButton(self.button_frame, text="Next", command=self.navigate_to_next)
+        self.right_button = CTk.CTkButton(self.button_frame, text="Next", command=lambda: self.navigate_to_next())
         self.right_button.place(relx=0.8, rely=0.5, anchor='center')
         
     def navigate_to_previous(self):
@@ -275,7 +293,8 @@ class ReadingTopLevel(CTk.CTkToplevel):
         
     def open_add_term_window(self):
         # Implement the functionality to open the add term window
-        print("Open add term window")
+        self.toplevel_window = addterm(self)  # create window if its None or destroyed
+        self.toplevel_window.grab_set()
 
 
 class GridEntryWindow(CTk.CTkToplevel):
@@ -485,6 +504,7 @@ class addterm(CTk.CTkToplevel):
 class Application(CTk.CTk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        app_library = library()
         
         # Initialize app settings
         CTk.set_appearance_mode('dark')
