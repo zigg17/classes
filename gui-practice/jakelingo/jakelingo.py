@@ -227,6 +227,57 @@ class VerbTenseSelectionWindow(CTk.CTkToplevel):
         y = (screen_height / 2) - (height / 2)
         self.geometry('%dx%d+%d+%d' % (width, height, x, y))
 
+class ReadingTopLevel(CTk.CTkToplevel):
+    def __init__(self):
+        super().__init__()
+        self.title("Reading Window")
+        self.geometry("700x550")
+        
+        # Set the popup as a modal window
+        self.grab_set()
+        
+        # Create a frame to contain the reading content
+        self.content_frame = CTk.CTkFrame(self)
+        self.content_frame.pack(fill='both', expand=True, padx=10, pady=10)
+        
+        # Example content
+        self.content_label = CTk.CTkLabel(self.content_frame, text="This is the reading content.", font=("Arial", 14))
+        self.content_label.pack(pady=10, padx=10)
+        
+        self.content_text = CTk.CTkTextbox(self.content_frame, wrap='word', height=350, width=580)
+        self.content_text.insert('1.0', 'stuff and things')
+        self.content_text.configure(state='disabled')
+        self.content_text.pack(pady=10, padx=10)
+
+        # Navigation and Add Term buttons frame
+        self.button_frame = CTk.CTkFrame(self)
+        self.button_frame.pack(side='bottom', fill='x', pady=10)
+        
+        # Left button
+        self.left_button = CTk.CTkButton(self.button_frame, text="Previous", command=self.navigate_to_previous)
+        self.left_button.place(relx=0.2, rely=0.5, anchor='center')
+        
+        # Add Term button
+        self.add_term_button = CTk.CTkButton(self.button_frame, text="Add Term", command=self.open_add_term_window)
+        self.add_term_button.place(relx=0.5, rely=0.5, anchor='center')
+        
+        # Right button
+        self.right_button = CTk.CTkButton(self.button_frame, text="Next", command=self.navigate_to_next)
+        self.right_button.place(relx=0.8, rely=0.5, anchor='center')
+        
+    def navigate_to_previous(self):
+        # Implement the navigation to the previous entry
+        print("Navigate to the previous entry")
+        
+    def navigate_to_next(self):
+        # Implement the navigation to the next entry
+        print("Navigate to the next entry")
+        
+    def open_add_term_window(self):
+        # Implement the functionality to open the add term window
+        print("Open add term window")
+
+
 class GridEntryWindow(CTk.CTkToplevel):
     def __init__(self, verb_tense='present'):
         super().__init__()
@@ -462,9 +513,9 @@ class Application(CTk.CTk):
         frame1.place(x=50, y=50)
         label1 = CTk.CTkLabel(frame1, text="Conversational", text_color='black', font=("Helvetica", 12))
         label1.place(relx=0.5, rely=0.1, anchor='center')
-        button1_flashcards = CTk.CTkButton(frame1, text="Flashcards", command=lambda: self.open_flashcards('conversational'))
+        button1_flashcards = CTk.CTkButton(frame1, text="Flashcards", command= lambda: self.open_flashcards('conversational'))
         button1_flashcards.place(relx=0.5, rely=0.3, anchor='center')
-        button1_reading = CTk.CTkButton(frame1, text="Reading")
+        button1_reading = CTk.CTkButton(frame1, text="Reading", command= lambda: self.open_reading_window())
         button1_reading.place(relx=0.5, rely=0.55, anchor='center')
         button1_writing = CTk.CTkButton(frame1, text="Writing")
         button1_writing.place(relx=0.5, rely=0.8, anchor='center')
@@ -476,7 +527,7 @@ class Application(CTk.CTk):
         label2.place(relx=0.5, rely=0.1, anchor='center')
         button2_flashcards = CTk.CTkButton(frame2, text="Flashcards", command=lambda: self.open_flashcards('scientific'))
         button2_flashcards.place(relx=0.5, rely=0.3, anchor='center')
-        button2_reading = CTk.CTkButton(frame2, text="Reading")
+        button2_reading = CTk.CTkButton(frame2, text="Reading", command=lambda: self.open_reading_window())
         button2_reading.place(relx=0.5, rely=0.55, anchor='center')
         button2_writing = CTk.CTkButton(frame2, text="Writing")
         button2_writing.place(relx=0.5, rely=0.8, anchor='center')
@@ -486,14 +537,12 @@ class Application(CTk.CTk):
         frame3.place(x=550, y=50)
         label3 = CTk.CTkLabel(frame3, text="Advanced", text_color='black', font=("Helvetica", 12))
         label3.place(relx=0.5, rely=0.1, anchor='center')
-        button3_flashcards = CTk.CTkButton(frame3, text="Flashcards", command=lambda: self.open_flashcards('advanced'))
+        button3_flashcards = CTk.CTkButton(frame3, text="Flashcards", command= lambda: self.open_flashcards('advanced'))
         button3_flashcards.place(relx=0.5, rely=0.3, anchor='center')
-        button3_reading = CTk.CTkButton(frame3, text="Reading")
+        button3_reading = CTk.CTkButton(frame3, text="Reading", command= lambda: self.open_reading_window())
         button3_reading.place(relx=0.5, rely=0.55, anchor='center')
         button3_writing = CTk.CTkButton(frame3, text="Writing")
         button3_writing.place(relx=0.5, rely=0.8, anchor='center')
-
-
 
     
     # Responsible for setting up the directory if there isn't any
@@ -544,6 +593,13 @@ class Application(CTk.CTk):
             self.toplevel_window.grab_set()
         else:
             self.toplevel_window.focus()  # if window exists focus it
+    
+    def open_reading_window(self):
+        if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
+            self.toplevel_window = ReadingTopLevel()
+            self.toplevel_window.grab_set()
+        else:
+            self.toplevel_window.focus()
 
 # Final loop for application
 if __name__ == "__main__":
