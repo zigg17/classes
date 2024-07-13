@@ -312,7 +312,6 @@ def open_reading_window(category):
     }
     ReadingTopLevel(category=category.capitalize(), title=titles[category])
 
-
 class GridEntryWindow(CTk.CTkToplevel):
     def __init__(self, verb_tense='present'):
         super().__init__()
@@ -551,7 +550,7 @@ class Application(CTk.CTk):
         label1.place(relx=0.5, rely=0.1, anchor='center')
         button1_flashcards = CTk.CTkButton(frame1, text="Flashcards", command= lambda: self.open_flashcards('conversational'))
         button1_flashcards.place(relx=0.5, rely=0.3, anchor='center')
-        button1_reading = CTk.CTkButton(frame1, text="Reading", command= lambda: self.open_reading_window())
+        button1_reading = CTk.CTkButton(frame1, text="Reading", command= lambda: self.open_reading('conversational'))
         button1_reading.place(relx=0.5, rely=0.55, anchor='center')
         button1_writing = CTk.CTkButton(frame1, text="Writing")
         button1_writing.place(relx=0.5, rely=0.8, anchor='center')
@@ -563,7 +562,7 @@ class Application(CTk.CTk):
         label2.place(relx=0.5, rely=0.1, anchor='center')
         button2_flashcards = CTk.CTkButton(frame2, text="Flashcards", command=lambda: self.open_flashcards('scientific'))
         button2_flashcards.place(relx=0.5, rely=0.3, anchor='center')
-        button2_reading = CTk.CTkButton(frame2, text="Reading", command=lambda: self.open_reading_window())
+        button2_reading = CTk.CTkButton(frame2, text="Reading", command=lambda: self.open_reading('scientific'))
         button2_reading.place(relx=0.5, rely=0.55, anchor='center')
         button2_writing = CTk.CTkButton(frame2, text="Writing")
         button2_writing.place(relx=0.5, rely=0.8, anchor='center')
@@ -575,7 +574,7 @@ class Application(CTk.CTk):
         label3.place(relx=0.5, rely=0.1, anchor='center')
         button3_flashcards = CTk.CTkButton(frame3, text="Flashcards", command= lambda: self.open_flashcards('advanced'))
         button3_flashcards.place(relx=0.5, rely=0.3, anchor='center')
-        button3_reading = CTk.CTkButton(frame3, text="Reading", command= lambda: self.open_reading_window())
+        button3_reading = CTk.CTkButton(frame3, text="Reading", command= lambda: self.open_reading('advanced'))
         button3_reading.place(relx=0.5, rely=0.55, anchor='center')
         button3_writing = CTk.CTkButton(frame3, text="Writing")
         button3_writing.place(relx=0.5, rely=0.8, anchor='center')
@@ -613,6 +612,24 @@ class Application(CTk.CTk):
         else:
             self.toplevel_window.focus()  # if window exists focus it
     
+     # Opens flashcards specefic to user inquery 
+    def open_reading(self, button):
+        if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
+            # Opens based on relevant strings coming in to the function
+            if button == 'all':
+                self.toplevel_window = open_reading_window('all')  # create window if its None or destroyed
+
+            if button == 'conversational':
+                self.toplevel_window = open_reading_window('conversational')  # create window if its None or destroyed
+            
+            if button == 'scientific':
+                self.toplevel_window = open_reading_window('scientific')  # create window if its None or destroyed
+            
+            if button == 'advanced':
+                self.toplevel_window = open_reading_window('advanced')  # create window if its None or destroyed
+        else:
+            self.toplevel_window.focus()  # if window exists focus it
+    
     # Responsible for opening the "add term window"
     def open_term(self):
         # Opens window if there isnt one already
@@ -630,12 +647,7 @@ class Application(CTk.CTk):
         else:
             self.toplevel_window.focus()  # if window exists focus it
     
-    def open_reading_window(self):
-        if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
-            self.toplevel_window = ReadingTopLevel()
-            self.toplevel_window.grab_set()
-        else:
-            self.toplevel_window.focus()
+    
 
 # Final loop for application
 if __name__ == "__main__":
