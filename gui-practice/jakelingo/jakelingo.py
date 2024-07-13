@@ -353,6 +353,88 @@ def open_reading_window(category):
     }
     ReadingTopLevel(category=category, title=titles[category])
 
+
+class WritingTopLevel(CTk.CTkToplevel):
+    def __init__(self, category, title):
+        super().__init__()
+        self.title(f"JakeLingo: {title}")
+        self.position_window(700, 550)
+        self.grab_set()
+        
+        self.title_strings = Cycle(random.sample(library(category).file_paths, len(library(category).file_paths)))
+        self.paragraph_strings = Cycle(random.sample(library(category).file_contents, len(library(category).file_contents)))
+        
+        # Create a frame to contain the reading content
+        self.content_frame = CTk.CTkFrame(self)
+        self.content_frame.pack(fill='both', expand=True, padx=10, pady=10)
+        
+        self.content_label = CTk.CTkLabel(self.content_frame, text=self.title_strings.current().split("/")[-1],
+                                          font=("Arial", 14))
+        self.content_label.pack(pady=10, padx=10)
+        
+        self.content_text = CTk.CTkTextbox(self.content_frame, wrap='word', height=350, width=580)
+        self.content_text.insert('1.0', self.paragraph_strings.current())
+        self.content_text.configure(state='disabled')
+        self.content_text.pack(pady=10, padx=10)
+
+        # Navigation and Add Term buttons frame
+        self.button_frame = CTk.CTkFrame(self)
+        self.button_frame.pack(side='bottom', fill='x', pady=10)
+        
+        # Left button
+        self.left_button = CTk.CTkButton(self.button_frame, text="Previous", command=lambda: self.navigate_to_previous())
+        self.left_button.place(relx=0.2, rely=0.5, anchor='center')
+        
+        # Add Term button
+        self.add_term_button = CTk.CTkButton(self.button_frame, text="Add Term", command=lambda: self.open_add_term_window())
+        self.add_term_button.place(relx=0.5, rely=0.5, anchor='center')
+        
+        # Right button
+        self.right_button = CTk.CTkButton(self.button_frame, text="Next", command=lambda: self.navigate_to_next())
+        self.right_button.place(relx=0.8, rely=0.5, anchor='center')
+        
+    def navigate_to_previous(self):
+        self.title_strings.prev()
+        self.content_label.configure(text = self.title_strings.current().split("/")[-1])
+        
+        self.paragraph_strings.prev()
+        self.content_text.configure(state='normal')
+        self.content_text.delete('1.0', 'end')
+        self.content_text.insert('1.0', self.paragraph_strings.current())
+        self.content_text.configure(state='disabled')
+        
+    def navigate_to_next(self):
+        # Implement the navigation to the next entry
+        self.title_strings.next()
+        self.content_label.configure(text = self.title_strings.current().split("/")[-1])
+
+        self.paragraph_strings.next()
+        self.content_text.configure(state='normal')
+        self.content_text.delete('1.0', 'end')
+        self.content_text.insert('1.0', self.paragraph_strings.current())
+        self.content_text.configure(state='disabled')
+        
+    def open_add_term_window(self):
+        # Implement the functionality to open the add term window
+        self.toplevel_window = addterm(self)  # create window if its None or destroyed
+        self.toplevel_window.grab_set()
+
+    # Helps incorporate window in the proper place
+    def position_window(self, width, height):
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        x = (screen_width / 2) - (width / 2)
+        y = (screen_height / 2) - (height / 2)
+        self.geometry('%dx%d+%d+%d' % (width, height, x, y))
+
+def open_writing_window(category):
+    titles = {
+        'convo': 'Conversational',
+        'science': 'Scientific',
+        'advanced': 'Advanced',
+    }
+    WritingTopLevel(category=category, title=titles[category])
+
 class GridEntryWindow(CTk.CTkToplevel):
     def __init__(self, verb_tense='present'):
         super().__init__()
@@ -592,7 +674,7 @@ class Application(CTk.CTk):
         button1_flashcards.place(relx=0.5, rely=0.3, anchor='center')
         button1_reading = CTk.CTkButton(frame1, text="Reading", command= lambda: self.open_reading('conversational'))
         button1_reading.place(relx=0.5, rely=0.55, anchor='center')
-        button1_writing = CTk.CTkButton(frame1, text="Writing")
+        button1_writing = CTk.CTkButton(frame1, text="Writing", command= lambda: self.open_writing('conversational'))
         button1_writing.place(relx=0.5, rely=0.8, anchor='center')
 
         # Scientific frame
@@ -600,11 +682,11 @@ class Application(CTk.CTk):
         frame2.place(x=300, y=50)
         label2 = CTk.CTkLabel(frame2, text="Scientific", text_color='black', font=("Helvetica", 12))
         label2.place(relx=0.5, rely=0.1, anchor='center')
-        button2_flashcards = CTk.CTkButton(frame2, text="Flashcards", command=lambda: self.open_flashcards('scientific'))
+        button2_flashcards = CTk.CTkButton(frame2, text="Flashcards", command= lambda: self.open_flashcards('scientific'))
         button2_flashcards.place(relx=0.5, rely=0.3, anchor='center')
-        button2_reading = CTk.CTkButton(frame2, text="Reading", command=lambda: self.open_reading('scientific'))
+        button2_reading = CTk.CTkButton(frame2, text="Reading", command= lambda: self.open_reading('scientific'))
         button2_reading.place(relx=0.5, rely=0.55, anchor='center')
-        button2_writing = CTk.CTkButton(frame2, text="Writing")
+        button2_writing = CTk.CTkButton(frame2, text="Writing", command= lambda: self.open_writing('scientific'))
         button2_writing.place(relx=0.5, rely=0.8, anchor='center')
 
         # Advanced frame
@@ -616,9 +698,8 @@ class Application(CTk.CTk):
         button3_flashcards.place(relx=0.5, rely=0.3, anchor='center')
         button3_reading = CTk.CTkButton(frame3, text="Reading", command= lambda: self.open_reading('advanced'))
         button3_reading.place(relx=0.5, rely=0.55, anchor='center')
-        button3_writing = CTk.CTkButton(frame3, text="Writing")
+        button3_writing = CTk.CTkButton(frame3, text="Writing", command= lambda: self.open_writing('advanced'))
         button3_writing.place(relx=0.5, rely=0.8, anchor='center')
-
     
     # Responsible for setting up the directory if there isn't any
     def setup(self):
@@ -668,6 +749,22 @@ class Application(CTk.CTk):
         else:
             self.toplevel_window.focus()  # if window exists focus it
     
+    # Opens flashcards specefic to user inquery 
+    def open_writing(self, button):
+        if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
+            # Opens based on relevant strings coming in to the function
+
+            if button == 'conversational':
+                self.toplevel_window = open_writing_window('convo')  # create window if its None or destroyed
+            
+            if button == 'scientific':
+                self.toplevel_window = open_writing_window('science')  # create window if its None or destroyed
+            
+            if button == 'advanced':
+                self.toplevel_window = open_writing_window('advanced')  # create window if its None or destroyed
+        else:
+            self.toplevel_window.focus()  # if window exists focus it
+    
     # Responsible for opening the "add term window"
     def open_term(self):
         # Opens window if there isnt one already
@@ -675,7 +772,7 @@ class Application(CTk.CTk):
             self.toplevel_window = addterm(self)  # create window if its None or destroyed
             self.toplevel_window.grab_set()
         else:
-            self.toplevel_window.focus()  # if window exists focus it
+            self.toplevel_window.focus() 
 
     def open_verbs(self):
         # Opens verb tense selection window if there isn't one already
@@ -683,7 +780,7 @@ class Application(CTk.CTk):
             self.toplevel_window = VerbTenseSelectionWindow(self)  # create window if its None or destroyed
             self.toplevel_window.grab_set()
         else:
-            self.toplevel_window.focus()  # if window exists focus it
+            self.toplevel_window.focus()
     
     
 
