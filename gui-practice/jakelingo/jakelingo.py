@@ -98,29 +98,47 @@ class lexicon:
         self.flashcard_list = [flashcard(self.english_words[x],
                                          self.spanish_words[x]) for x in range(len(self.english_words))]
         
-def library(): 
-    app_data_directory = os.path.join(os.path.expanduser('~'), 'spanData')
-    library_directory = os.path.join(app_data_directory, 'library')
-    
-    if not os.path.exists(library_directory):
-        os.makedirs(library_directory)
+class library: 
+    def __init__ (self, category):
+        app_data_directory = os.path.join(os.path.expanduser('~'), 'spanData')
+        if not os.path.exists(app_data_directory):
+            os.makedirs(app_data_directory)
+        library_directory = os.path.join(app_data_directory, 'library')
+        if not os.path.exists(library_directory):
+            os.makedirs(library_directory)
+        convo_directory = os.path.join(library_directory, 'conversational')
+        if not os.path.exists(convo_directory):
+            os.makedirs(convo_directory)
+        scientific_directory = os.path.join(library_directory, 'scientific')
+        if not os.path.exists(scientific_directory):
+            os.makedirs(scientific_directory)
+        advanced_directory = os.path.join(library_directory, 'advanced')
+        if not os.path.exists(advanced_directory):
+            os.makedirs(advanced_directory) 
+        
+        directory = ''
+        if category == 'convo':
+            directory = convo_directory
+        elif category == 'science':
+            directory = scientific_directory
+        elif category == 'advanced':
+            directory = advanced_directory
+        else:
+            return
+        
+        self.file_paths = []
+        # Loop through files in the directory and add their paths to the list
+        for file_path in glob.glob(os.path.join(directory, '*')):
+            self.file_paths.append(file_path)
+        
+        # List to hold file contents
+        self.file_contents = []
 
-    # List to hold file paths
-    file_paths = []
-
-    # Loop through files in the directory and add their paths to the list
-    for file_path in glob.glob(os.path.join(library_directory, '*')):
-        file_paths.append(file_path)
-    
-    # List to hold file contents
-    file_contents = []
-
-    # Loop through each file path and read the content into a string
-    for file_path in file_paths:
-        with open(file_path, 'r') as file:
-            data = file.read()
-            file_contents.append(data)      
-
+        # Loop through each file path and read the content into a string
+        for file_path in self.file_paths:
+            with open(file_path, 'r') as file:
+                data = file.read()
+                self.file_contents.append(data)    
 
 # Spanish translatore utilizing google translate
 def spanTrans(text_to_translate):
@@ -257,9 +275,11 @@ class ReadingTopLevel(CTk.CTkToplevel):
         super().__init__()
         self.title(f"JakeLingo: {title}")
         self.geometry("700x550")
-        
-        # Set the popup as a modal window
         self.grab_set()
+        
+        current_library = library(category)
+        title_strings = Cycle(random.sample(library(category).file_paths, len(library(category).file_paths)))
+        paragraph_strings = Cycle(random.sample(library(category).file_contents, len(library(category).file_contents)))
         
         # Create a frame to contain the reading content
         self.content_frame = CTk.CTkFrame(self)
@@ -305,12 +325,11 @@ class ReadingTopLevel(CTk.CTkToplevel):
 
 def open_reading_window(category):
     titles = {
-        'conversational': 'Conversational',
-        'scientific': 'Scientific',
+        'convo': 'Conversational',
+        'science': 'Scientific',
         'advanced': 'Advanced',
-        'all': 'All'
     }
-    ReadingTopLevel(category=category.capitalize(), title=titles[category])
+    ReadingTopLevel(category=category, title=titles[category])
 
 class GridEntryWindow(CTk.CTkToplevel):
     def __init__(self, verb_tense='present'):
@@ -519,7 +538,6 @@ class addterm(CTk.CTkToplevel):
 class Application(CTk.CTk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        app_library = library()
 
         # Initialize app settings
         CTk.set_appearance_mode('dark')
@@ -616,14 +634,12 @@ class Application(CTk.CTk):
     def open_reading(self, button):
         if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
             # Opens based on relevant strings coming in to the function
-            if button == 'all':
-                self.toplevel_window = open_reading_window('all')  # create window if its None or destroyed
 
             if button == 'conversational':
-                self.toplevel_window = open_reading_window('conversational')  # create window if its None or destroyed
+                self.toplevel_window = open_reading_window('convo')  # create window if its None or destroyed
             
             if button == 'scientific':
-                self.toplevel_window = open_reading_window('scientific')  # create window if its None or destroyed
+                self.toplevel_window = open_reading_window('science')  # create window if its None or destroyed
             
             if button == 'advanced':
                 self.toplevel_window = open_reading_window('advanced')  # create window if its None or destroyed
