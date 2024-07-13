@@ -676,6 +676,7 @@ class JournalFrame(CTk.CTkFrame):
                                          hover_color=("#c7bccb", "#c7bccb"))
         self.left_button.grid(row=4, column=1, padx=40, pady=20)
 
+        # Replace right_button with right arrow button
         self.right_button = CTk.CTkButton(self, corner_radius=0, height=40, border_spacing=10,
                                          image=self.parent.right_image, text="", fg_color=("gray70", "gray30"),
                                          hover_color=("#c7bccb", "#c7bccb"))
