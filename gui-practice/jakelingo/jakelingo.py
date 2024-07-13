@@ -50,7 +50,7 @@ class verb_unit:
         self.ellos_ellas_uds = ellos_ellas_uds
 
 class lexicon:
-    def __init__(self, word_type: str, verb_tense = None):
+    def __init__(self, word_type: str, verb_tense=None):
         app_data_directory = os.path.join(os.path.expanduser('~'), 'spanData')
 
         # Create the directory if it doesn't exist
@@ -65,27 +65,27 @@ class lexicon:
         # Reading from save csv to pull data
         df = pd.read_csv(file_path)
 
-        if(word_type == 'Verb'):
+        if word_type == 'Verb':
             df = df[df['verb?'] == True]
             verb_objects = []
             for x in range(len(df)):
-                conjugate_dict = Conjugator().conjugate(df.iloc[x,0],verb_tense,'indicative')
-                english_word = df.iloc[x,1]
-                inf = df.iloc[x,0]
-                yo = conjugate_dict['yo'].encode('latin1').decode('utf-8')
-                tu = conjugate_dict['tu'].encode('latin1').decode('utf-8')
-                el_ella_ud = conjugate_dict['el/ella/usted'].encode('latin1').decode('utf-8')
-                nosotros = conjugate_dict['nosotros'].encode('latin1').decode('utf-8')
-                vosotros = conjugate_dict['vosotros'].encode('latin1').decode('utf-8')
-                ellos_ellas_uds = conjugate_dict['ellos/ellas/ustedes'].encode('latin1').decode('utf-8')
-                verb_objects.append(verb_unit(english_word, inf, yo, tu,
-                                              el_ella_ud, nosotros, 
-                                              vosotros, ellos_ellas_uds))
-            
+                conjugate_dict = Conjugator().conjugate(df.iloc[x, 0], verb_tense, 'indicative')
+                if conjugate_dict:
+                    english_word = df.iloc[x, 1]
+                    inf = df.iloc[x, 0]
+                    yo = conjugate_dict.get('yo', '').encode('latin1').decode('utf-8')
+                    tu = conjugate_dict.get('tu', '').encode('latin1').decode('utf-8')
+                    el_ella_ud = conjugate_dict.get('el/ella/usted', '').encode('latin1').decode('utf-8')
+                    nosotros = conjugate_dict.get('nosotros', '').encode('latin1').decode('utf-8')
+                    vosotros = conjugate_dict.get('vosotros', '').encode('latin1').decode('utf-8')
+                    ellos_ellas_uds = conjugate_dict.get('ellos/ellas/ustedes', '').encode('latin1').decode('utf-8')
+                    verb_objects.append(verb_unit(english_word, inf, yo, tu,
+                                                  el_ella_ud, nosotros,
+                                                  vosotros, ellos_ellas_uds))
             self.verb_objects = verb_objects
-        
+
         # Allows for users to go through entirety of word deck if they desire
-        if(word_type != 'All'):
+        if word_type != 'All':
             df = df[df['Classification'] == word_type]
         else:
             df = df.drop(columns=['Classification'])
@@ -93,10 +93,10 @@ class lexicon:
         # Saving first parts of the class
         self.english_words = list(df.iloc[:, 1])
         self.spanish_words = list(df.iloc[:, 0])
-        
+
         # Converting class to flashcards
         self.flashcard_list = [flashcard(self.english_words[x],
-                                                        self.spanish_words[x]) for x in range(len(self.english_words))]
+                                         self.spanish_words[x]) for x in range(len(self.english_words))]
         
 class library: 
     def __init__(self):
