@@ -5,7 +5,7 @@ A place in which I practiced coding UIs and their corresponding backends from th
 ### Projects created through python, using tkinter and customtkinter:
 1. [Weave](gui-practice/weave/readme.md) - a meditation app that tracks statistics.
 2. [JakeLingo](gui-practice/jakelingo/readme.md) - a spanish learning app augmented towards my learning style.
-### Projects utlizing dart and python:
+### Projects utlizing django via python:
 1. 
 ### Projects utilizing HTML, bootstrap, and css:
 1. [Baratta Lab]() - informational lab website created for the Baratta Lab.
