@@ -275,6 +275,7 @@ class ReadingTopLevel(CTk.CTkToplevel):
     def __init__(self, category, title):
         super().__init__()
         self.title(f"JakeLingo: {title}")
+        self.resizable(False, False)
         self.position_window(700, 550)
         self.grab_set()
         
@@ -360,8 +361,21 @@ class WritingTopLevel(CTk.CTkToplevel):
         self.title(f"JakeLingo: {title}")
         self.position_window(700, 550)
         self.grab_set()
-        self.grid_columnconfigure(1, weight=1) 
-        self.grid_rowconfigure(1, weight=1)
+        self.resizable(False, False)
+
+        self.left_button = CTk.CTkButton(self, text="prev")
+        self.left_button.grid(row=4, column=0, pady = 10)
+
+        self.right_button = CTk.CTkButton(self, text="next")
+        self.right_button.grid(row=4, column=1, pady = 10)
+
+        # Create and place the dropdown list
+        self.journal_search = CTk.CTkButton(self, text="Search By Date")
+        self.journal_search.grid(row=4, column=2, pady = 10)
+
+        # Create and place the dropdown list
+        self.journal_search = CTk.CTkButton(self, text="New Entry")
+        self.journal_search.grid(row=4, column=3, pady = 10)
 
 
     # Helps incorporate window in the proper place
