@@ -360,64 +360,9 @@ class WritingTopLevel(CTk.CTkToplevel):
         self.title(f"JakeLingo: {title}")
         self.position_window(700, 550)
         self.grab_set()
-        
-        self.title_strings = Cycle(random.sample(library(category).file_paths, len(library(category).file_paths)))
-        self.paragraph_strings = Cycle(random.sample(library(category).file_contents, len(library(category).file_contents)))
-        
-        # Create a frame to contain the reading content
-        self.content_frame = CTk.CTkFrame(self)
-        self.content_frame.pack(fill='both', expand=True, padx=10, pady=10)
-        
-        self.content_label = CTk.CTkLabel(self.content_frame, text=self.title_strings.current().split("/")[-1],
-                                          font=("Arial", 14))
-        self.content_label.pack(pady=10, padx=10)
-        
-        self.content_text = CTk.CTkTextbox(self.content_frame, wrap='word', height=350, width=580)
-        self.content_text.insert('1.0', self.paragraph_strings.current())
-        self.content_text.configure(state='disabled')
-        self.content_text.pack(pady=10, padx=10)
+        self.grid_columnconfigure(1, weight=1) 
+        self.grid_rowconfigure(1, weight=1)
 
-        # Navigation and Add Term buttons frame
-        self.button_frame = CTk.CTkFrame(self)
-        self.button_frame.pack(side='bottom', fill='x', pady=10)
-        
-        # Left button
-        self.left_button = CTk.CTkButton(self.button_frame, text="Previous", command=lambda: self.navigate_to_previous())
-        self.left_button.place(relx=0.2, rely=0.5, anchor='center')
-        
-        # Add Term button
-        self.add_term_button = CTk.CTkButton(self.button_frame, text="Add Term", command=lambda: self.open_add_term_window())
-        self.add_term_button.place(relx=0.5, rely=0.5, anchor='center')
-        
-        # Right button
-        self.right_button = CTk.CTkButton(self.button_frame, text="Next", command=lambda: self.navigate_to_next())
-        self.right_button.place(relx=0.8, rely=0.5, anchor='center')
-        
-    def navigate_to_previous(self):
-        self.title_strings.prev()
-        self.content_label.configure(text = self.title_strings.current().split("/")[-1])
-        
-        self.paragraph_strings.prev()
-        self.content_text.configure(state='normal')
-        self.content_text.delete('1.0', 'end')
-        self.content_text.insert('1.0', self.paragraph_strings.current())
-        self.content_text.configure(state='disabled')
-        
-    def navigate_to_next(self):
-        # Implement the navigation to the next entry
-        self.title_strings.next()
-        self.content_label.configure(text = self.title_strings.current().split("/")[-1])
-
-        self.paragraph_strings.next()
-        self.content_text.configure(state='normal')
-        self.content_text.delete('1.0', 'end')
-        self.content_text.insert('1.0', self.paragraph_strings.current())
-        self.content_text.configure(state='disabled')
-        
-    def open_add_term_window(self):
-        # Implement the functionality to open the add term window
-        self.toplevel_window = addterm(self)  # create window if its None or destroyed
-        self.toplevel_window.grab_set()
 
     # Helps incorporate window in the proper place
     def position_window(self, width, height):
