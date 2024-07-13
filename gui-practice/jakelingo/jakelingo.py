@@ -375,7 +375,7 @@ class WritingTopLevel(CTk.CTkToplevel):
         self.journal_search.grid(row=4, column=2, pady = 30)
 
         # Create and place the dropdown list
-        self.journal_search = CTk.CTkButton(self, text="New Entry")
+        self.journal_search = CTk.CTkButton(self, text="New Entry", command= lambda: self.create_journal_popup())
         self.journal_search.grid(row=4, column=3, pady = 30)
 
 
@@ -389,7 +389,7 @@ class WritingTopLevel(CTk.CTkToplevel):
 
     def open_journal_entries_popup(self):
         # Create a new top-level window for journal entries
-        self.journal_entries_window = tk.Toplevel(self)
+        self.journal_entries_window = CTk.CTkToplevel(self)
         self.journal_entries_window.geometry("+{}+{}".format(self.winfo_rootx()+100, self.winfo_rooty()+75))
         self.journal_entries_window.title("Journal Entries")
 
@@ -399,6 +399,36 @@ class WritingTopLevel(CTk.CTkToplevel):
         # Use a scrollable frame to accommodate a large number of entries
         scrollable_frame = CTk.CTkScrollableFrame(self.journal_entries_window)
         scrollable_frame.pack(fill='both', expand=True)
+    
+    def create_journal_popup(self):
+        # Create a new top-level window
+        self.journal_window = CTk.CTkToplevel(self)
+        self.journal_window.title("Journal Entry")
+        self.journal_window.grab_set()
+        self.resizable(False, False)
+
+        # Position the new window relative to the main window
+        self.journal_window.geometry("+{}+{}".format(self.winfo_rootx()+100, self.winfo_rooty()+75))
+
+        # Create a text entry box
+        self.journal_entry = CTk.CTkTextbox(self.journal_window, height=300, width=500, wrap = 'word')
+        self.journal_entry.pack(padx=10, pady=10)
+
+        # Create a submit button
+        submit_button = CTk.CTkButton(self.journal_window, text="Submit", command= lambda:self.submit_journal_entry())
+        submit_button.pack(pady=10)
+
+    def submit_journal_entry(self):
+        # Get text from the text entry box
+        journal_text = self.journal_entry.get("1.0", "end-1c")
+
+        # Ask for confirmation
+        if messagebox.askyesno("Confirm", "Are you sure you want to submit?"):
+            # Process the journal text as needed
+            pass
+        else:
+            # User decided not to submit, you can handle it here
+            pass  # Do nothing, or perhaps provide feedback to the user
 
 def open_writing_window(category):
     titles = {
