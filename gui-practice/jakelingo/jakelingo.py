@@ -3,6 +3,7 @@ from googletrans import Translator
 import os
 import csv
 import customtkinter as CTk
+import tkinter as tk
 from tkinter import messagebox
 import pandas as pd
 from spanishconjugator import Conjugator
@@ -275,9 +276,9 @@ class ReadingTopLevel(CTk.CTkToplevel):
     def __init__(self, category, title):
         super().__init__()
         self.title(f"JakeLingo: {title}")
-        self.resizable(False, False)
         self.position_window(700, 550)
         self.grab_set()
+        self.resizable(False, False)
         
         self.title_strings = Cycle(random.sample(library(category).file_paths, len(library(category).file_paths)))
         self.paragraph_strings = Cycle(random.sample(library(category).file_contents, len(library(category).file_contents)))
@@ -370,7 +371,7 @@ class WritingTopLevel(CTk.CTkToplevel):
         self.right_button.grid(row=4, column=1, pady = 30)
 
         # Create and place the dropdown list
-        self.journal_search = CTk.CTkButton(self, text="Search By Date")
+        self.journal_search = CTk.CTkButton(self, text="Search By Date", command= lambda: self.open_journal_entries_popup())
         self.journal_search.grid(row=4, column=2, pady = 30)
 
         # Create and place the dropdown list
@@ -385,6 +386,19 @@ class WritingTopLevel(CTk.CTkToplevel):
         x = (screen_width / 2) - (width / 2)
         y = (screen_height / 2) - (height / 2)
         self.geometry('%dx%d+%d+%d' % (width, height, x, y))
+
+    def open_journal_entries_popup(self):
+        # Create a new top-level window for journal entries
+        self.journal_entries_window = tk.Toplevel(self)
+        self.journal_entries_window.geometry("+{}+{}".format(self.winfo_rootx()+100, self.winfo_rooty()+75))
+        self.journal_entries_window.title("Journal Entries")
+
+        # Set the popup as a modal window
+        self.journal_entries_window.grab_set()
+
+        # Use a scrollable frame to accommodate a large number of entries
+        scrollable_frame = CTk.CTkScrollableFrame(self.journal_entries_window)
+        scrollable_frame.pack(fill='both', expand=True)
 
 def open_writing_window(category):
     titles = {
@@ -533,9 +547,9 @@ class addterm(CTk.CTkToplevel):
     def __init__(self, *args, **kwargs):
         # Opening window for the add term page
         super().__init__(*args, **kwargs)
-        self.resizable(False, False)
         self.position_window(300, 250)
         self.title("JakeLingo: Add Term")
+        self.resizable(False, False)
         
         # Adding buffer label
         self.label = CTk.CTkLabel(self, text='')
@@ -604,6 +618,7 @@ class Application(CTk.CTk):
 
         # Initialize app settings
         CTk.set_appearance_mode('dark')
+        CTk.set_default_color_theme("green")
         self.title("JakeLingo")
         self.resizable(False, False)
         self.toplevel_window = None
@@ -740,8 +755,6 @@ class Application(CTk.CTk):
             self.toplevel_window.grab_set()
         else:
             self.toplevel_window.focus()
-    
-    
 
 # Final loop for application
 if __name__ == "__main__":
