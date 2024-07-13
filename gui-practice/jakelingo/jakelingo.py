@@ -3,7 +3,6 @@ from googletrans import Translator
 import os
 import csv
 import customtkinter as CTk
-import tkinter as tk
 from tkinter import messagebox
 import pandas as pd
 from spanishconjugator import Conjugator
@@ -139,7 +138,49 @@ class library:
         for file_path in self.file_paths:
             with open(file_path, 'r') as file:
                 data = file.read()
-                self.file_contents.append(data)    
+                self.file_contents.append(data)
+
+class portfolio: 
+    def __init__ (self, category):
+        app_data_directory = os.path.join(os.path.expanduser('~'), 'spanData')
+        if not os.path.exists(app_data_directory):
+            os.makedirs(app_data_directory)
+        library_directory = os.path.join(app_data_directory, 'portfolio')
+        if not os.path.exists(library_directory):
+            os.makedirs(library_directory)
+        convo_directory = os.path.join(library_directory, 'conversational')
+        if not os.path.exists(convo_directory):
+            os.makedirs(convo_directory)
+        scientific_directory = os.path.join(library_directory, 'scientific')
+        if not os.path.exists(scientific_directory):
+            os.makedirs(scientific_directory)
+        advanced_directory = os.path.join(library_directory, 'advanced')
+        if not os.path.exists(advanced_directory):
+            os.makedirs(advanced_directory) 
+        
+        directory = ''
+        if category == 'convo':
+            directory = convo_directory
+        elif category == 'science':
+            directory = scientific_directory
+        elif category == 'advanced':
+            directory = advanced_directory
+        else:
+            return
+        
+        self.file_paths = []
+        # Loop through files in the directory and add their paths to the list
+        for file_path in glob.glob(os.path.join(directory, '*')):
+            self.file_paths.append(file_path)
+        
+        # List to hold file contents
+        self.file_contents = []
+
+        # Loop through each file path and read the content into a string
+        for file_path in self.file_paths:
+            with open(file_path, 'r') as file:
+                data = file.read()
+                self.file_contents.append(data)  
 
 # Spanish translatore utilizing google translate
 def spanTrans(text_to_translate):
@@ -741,7 +782,6 @@ class Application(CTk.CTk):
     def open_reading(self, button):
         if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
             # Opens based on relevant strings coming in to the function
-
             if button == 'conversational':
                 self.toplevel_window = open_reading_window('convo')  # create window if its None or destroyed
             
