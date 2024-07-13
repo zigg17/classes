@@ -199,7 +199,8 @@ class FlashcardsWindow(CTk.CTkToplevel):
         self.card.place(x=26, y=45)
 
         # Add label to the card frame
-        self.card_label = CTk.CTkLabel(self.card, text=self.flashcards.current().spanish_side, text_color='black', font=('Arial', 24))
+        self.card_label = CTk.CTkLabel(self.card, text=self.flashcards.current().spanish_side,
+                                       text_color='black', font=('Arial', 24))
         self.card_label.place(relx=0.5, rely=0.5, anchor="center")
 
         # Add buttons to the frame
@@ -274,23 +275,23 @@ class ReadingTopLevel(CTk.CTkToplevel):
     def __init__(self, category, title):
         super().__init__()
         self.title(f"JakeLingo: {title}")
-        self.geometry("700x550")
+        self.position_window(700, 550)
         self.grab_set()
         
-        current_library = library(category)
-        title_strings = Cycle(random.sample(library(category).file_paths, len(library(category).file_paths)))
-        paragraph_strings = Cycle(random.sample(library(category).file_contents, len(library(category).file_contents)))
+        self.title_strings = Cycle(random.sample(library(category).file_paths, len(library(category).file_paths)))
+        self.paragraph_strings = Cycle(random.sample(library(category).file_contents, len(library(category).file_contents)))
         
         # Create a frame to contain the reading content
         self.content_frame = CTk.CTkFrame(self)
         self.content_frame.pack(fill='both', expand=True, padx=10, pady=10)
         
         # Example content
-        self.content_label = CTk.CTkLabel(self.content_frame, text="This is the reading content.", font=("Arial", 14))
+        self.content_label = CTk.CTkLabel(self.content_frame, text=self.title_strings.current().split("/")[-1],
+                                          font=("Arial", 14))
         self.content_label.pack(pady=10, padx=10)
         
         self.content_text = CTk.CTkTextbox(self.content_frame, wrap='word', height=350, width=580)
-        self.content_text.insert('1.0', 'stuff and things')
+        self.content_text.insert('1.0', self.paragraph_strings.current())
         self.content_text.configure(state='disabled')
         self.content_text.pack(pady=10, padx=10)
 
@@ -311,17 +312,38 @@ class ReadingTopLevel(CTk.CTkToplevel):
         self.right_button.place(relx=0.8, rely=0.5, anchor='center')
         
     def navigate_to_previous(self):
-        # Implement the navigation to the previous entry
-        print("Navigate to the previous entry")
+        self.title_strings.prev()
+        self.content_label.configure(text = self.title_strings.current().split("/")[-1])
+        
+        self.paragraph_strings.prev()
+        self.content_text.configure(state='normal')
+        self.content_text.delete('1.0', 'end')
+        self.content_text.insert('1.0', self.paragraph_strings.current())
+        self.content_text.configure(state='disabled')
         
     def navigate_to_next(self):
         # Implement the navigation to the next entry
-        print("Navigate to the next entry")
+        self.title_strings.next()
+        self.content_label.configure(text = self.title_strings.current().split("/")[-1])
+
+        self.paragraph_strings.next()
+        self.content_text.configure(state='normal')
+        self.content_text.delete('1.0', 'end')
+        self.content_text.insert('1.0', self.paragraph_strings.current())
+        self.content_text.configure(state='disabled')
         
     def open_add_term_window(self):
         # Implement the functionality to open the add term window
         self.toplevel_window = addterm(self)  # create window if its None or destroyed
         self.toplevel_window.grab_set()
+
+    # Helps incorporate window in the proper place
+    def position_window(self, width, height):
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        x = (screen_width / 2) - (width / 2)
+        y = (screen_height / 2) - (height / 2)
+        self.geometry('%dx%d+%d+%d' % (width, height, x, y))
 
 def open_reading_window(category):
     titles = {
