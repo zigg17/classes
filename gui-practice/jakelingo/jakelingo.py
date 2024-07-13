@@ -98,29 +98,28 @@ class lexicon:
         self.flashcard_list = [flashcard(self.english_words[x],
                                          self.spanish_words[x]) for x in range(len(self.english_words))]
         
-class library: 
-    def __init__(self):
-        app_data_directory = os.path.join(os.path.expanduser('~'), 'spanData')
-        library_directory = os.path.join(app_data_directory, 'library')
-        
-        if not os.path.exists(library_directory):
-            os.makedirs(library_directory)
+def library(): 
+    app_data_directory = os.path.join(os.path.expanduser('~'), 'spanData')
+    library_directory = os.path.join(app_data_directory, 'library')
+    
+    if not os.path.exists(library_directory):
+        os.makedirs(library_directory)
 
-        # List to hold file paths
-        self.file_paths = []
+    # List to hold file paths
+    file_paths = []
 
-        # Loop through files in the directory and add their paths to the list
-        for file_path in glob.glob(os.path.join(library_directory, '*')):
-            self.file_paths.append(file_path)
-        
-        # List to hold file contents
-        self.file_contents = []
+    # Loop through files in the directory and add their paths to the list
+    for file_path in glob.glob(os.path.join(library_directory, '*')):
+        file_paths.append(file_path)
+    
+    # List to hold file contents
+    file_contents = []
 
-        # Loop through each file path and read the content into a string
-        for file_path in self.file_paths:
-            with open(file_path, 'r') as file:
-                data = file.read()
-                self.file_contents.append(data)      
+    # Loop through each file path and read the content into a string
+    for file_path in file_paths:
+        with open(file_path, 'r') as file:
+            data = file.read()
+            file_contents.append(data)      
 
 
 # Spanish translatore utilizing google translate
@@ -254,9 +253,9 @@ class VerbTenseSelectionWindow(CTk.CTkToplevel):
         self.geometry('%dx%d+%d+%d' % (width, height, x, y))
 
 class ReadingTopLevel(CTk.CTkToplevel):
-    def __init__(self):
+    def __init__(self, category, title):
         super().__init__()
-        self.title("Reading Window")
+        self.title(f"JakeLingo: {title}")
         self.geometry("700x550")
         
         # Set the popup as a modal window
@@ -303,6 +302,15 @@ class ReadingTopLevel(CTk.CTkToplevel):
         # Implement the functionality to open the add term window
         self.toplevel_window = addterm(self)  # create window if its None or destroyed
         self.toplevel_window.grab_set()
+
+def open_reading_window(category):
+    titles = {
+        'conversational': 'Conversational',
+        'scientific': 'Scientific',
+        'advanced': 'Advanced',
+        'all': 'All'
+    }
+    ReadingTopLevel(category=category.capitalize(), title=titles[category])
 
 
 class GridEntryWindow(CTk.CTkToplevel):
