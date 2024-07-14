@@ -467,8 +467,6 @@ class HomeFrame(CTk.CTkFrame):
         self.date_frame = CTk.CTkFrame(self.turtle_canvas, fg_color='transparent', 
                                          width= 100, height=50)
 
-        # Place switch_frame at the bottom right corner
-
         self.date_frame.place(x= 485, y= 10)
         # Place label and switch inside the switch_frame
         self.mode_label = CTk.CTkLabel(self.date_frame, text=f"{datetime.datetime.now().date()}", 

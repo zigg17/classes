@@ -31,6 +31,9 @@ class Cycle:
 
     def current(self):
         return self.items[self.index]
+    
+    def add(self, item):
+        self.items.append(item)
 
 class flashcard:
     def __init__(self, english_word: str, spanish_word: str):
@@ -422,20 +425,22 @@ class WritingTopLevel(CTk.CTkToplevel):
         self.resizable(False, False)
 
         self.left_button = CTk.CTkButton(self, text="prev")
-        self.left_button.grid(row=4, column=0, pady = 30)
+        self.left_button.grid(row=4, column=0, pady = 10)
 
         self.right_button = CTk.CTkButton(self, text="next")
-        self.right_button.grid(row=4, column=1, pady = 30)
+        self.right_button.grid(row=4, column=1, pady = 10)
 
         # Create and place the dropdown list
         self.journal_search = CTk.CTkButton(self, text="Search By Date", command= lambda: self.open_journal_entries_popup())
-        self.journal_search.grid(row=4, column=2, pady = 30)
+        self.journal_search.grid(row=4, column=2, pady = 10)
 
         # Create and place the dropdown list
         self.journal_search = CTk.CTkButton(self, text="New Entry", command= lambda: self.create_journal_popup())
-        self.journal_search.grid(row=4, column=3, pady = 30)
+        self.journal_search.grid(row=4, column=3, pady = 10)
+        portafolio = Cycle(portfolio(category))
 
-
+        if len(portafolio.file_contents) != 0:
+            
     # Helps incorporate window in the proper place
     def position_window(self, width, height):
         screen_width = self.winfo_screenwidth()
