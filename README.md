@@ -8,7 +8,7 @@ A place in which I practiced coding UIs and their corresponding backends from th
 ### Projects utlizing django via python:
 1. 
 ### Projects utilizing HTML, bootstrap, and css:
-1. [Baratta Lab](https://www.barattalab.org) - informational lab website created for the Baratta Lab, code [here](gui-practice/BarattaLab).
+1. [Baratta Lab](https://www.barattalab.org) - informational lab website created for the Baratta Lab, code and files[here](gui-practice/BarattaLab).
 
 ## Intro to datascience: 
 - Skills learned:
