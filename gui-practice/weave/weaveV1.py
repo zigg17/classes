@@ -233,7 +233,8 @@ class Application(CTk.CTk):
     def submit_username(self, window, entry):
         entered_username = entry.get()
         if len(entered_username) > 14 or len(entered_username) == 0:
-            messagebox.showerror(title = "Error", message = "Name must be 14 characters or shorter and cannot contain no characters.")
+            messagebox.showerror(title = "Error",
+                                 message = "Name must be 14 characters or shorter and cannot contain no characters.")
 
             entry.delete(0, CTk.END)  # Clear the entry field for new input
         else:
@@ -251,7 +252,8 @@ class Application(CTk.CTk):
         username_entry.pack(pady=20)
         
         # Submit button
-        submit_button = CTk.CTkButton(input_window, text="Submit", command=lambda: self.submit_username(input_window, username_entry)
+        submit_button = CTk.CTkButton(input_window, text="Submit", 
+                                      command=lambda: self.submit_username(input_window, username_entry)
                                       ,fg_color=("gray70", "gray30"), hover_color= ("#c7bccb", "#c7bccb"))
         submit_button.pack()
 
@@ -475,7 +477,8 @@ class HomeFrame(CTk.CTkFrame):
         
         self.total = sumMeditations()
         # Example content inside the frame
-        self.label = CTk.CTkLabel(self.overlay_frame, text=f"{self.total[0]}d {self.total[1]}h {self.total[2]}m {self.total[3]}s")
+        self.label = CTk.CTkLabel(self.overlay_frame,
+                                  text=f"{self.total[0]}d {self.total[1]}h {self.total[2]}m {self.total[3]}s")
         self.label.pack(pady=10, padx=10)
     
     def relabel(self):
@@ -690,7 +693,8 @@ class JournalFrame(CTk.CTkFrame):
 
     def initialize_journal_entries(self):
         journal_entries = parse_journal_entries_from_file()
-        self.sorted_entries = sorted(journal_entries, key=lambda e: datetime.datetime.strptime(e['date'], "%m/%d/%Y %I:%M:%S %p"), reverse=True)
+        self.sorted_entries = sorted(journal_entries, 
+                                     key=lambda e: datetime.datetime.strptime(e['date'],"%m/%d/%Y %I:%M:%S %p"), reverse=True)
         if self.sorted_entries:
             self.current_entry_index = 0
             self.on_journal_entry_click(self.sorted_entries[0])
@@ -711,7 +715,8 @@ class JournalFrame(CTk.CTkFrame):
 
         # Find the most recent entry
         if journal_entries:
-            most_recent_entry = max(journal_entries, key=lambda e: datetime.datetime.strptime(e['date'], "%m/%d/%Y %I:%M:%S %p"))
+            most_recent_entry = max(journal_entries,
+                                    key=lambda e: datetime.datetime.strptime(e['date'], "%m/%d/%Y %I:%M:%S %p"))
             self.on_journal_entry_click(most_recent_entry)
     
     def open_journal_entries_popup(self):
@@ -732,7 +737,8 @@ class JournalFrame(CTk.CTkFrame):
         journal_entries = parse_journal_entries_from_file()
 
         # Sort the entries in reverse chronological order
-        sorted_entries = sorted(journal_entries, key=lambda e: datetime.datetime.strptime(e['date'], "%m/%d/%Y %I:%M:%S %p"), reverse=True)
+        sorted_entries = sorted(journal_entries,
+                                key=lambda e: datetime.datetime.strptime(e['date'], "%m/%d/%Y %I:%M:%S %p"), reverse=True)
 
         # Create a button for each journal entry
         for entry in sorted_entries:
@@ -817,7 +823,8 @@ class StatsFrame(CTk.CTkScrollableFrame):
     def process_data(self):
         if not self.meditation_data.empty:
             # Calculate total time in minutes
-            self.meditation_data['TotalTime'] = self.meditation_data['Hours'] * 60 + self.meditation_data['Minutes'] + self.meditation_data['Seconds'] / 60
+            self.meditation_data['TotalTime'] = self.meditation_data['Hours'] * 60 + \
+                self.meditation_data['Minutes'] + self.meditation_data['Seconds'] / 60
             self.meditation_data['Weekday'] = self.meditation_data['Date'].dt.day_name()
 
     def create_plots(self):

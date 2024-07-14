@@ -9,6 +9,7 @@ from spanishconjugator import Conjugator
 import random
 import glob
 from tkinter import messagebox
+from datetime import datetime
 
 translator = Translator()
 
@@ -170,19 +171,19 @@ class portfolio:
         if not os.path.exists(advanced_directory):
             os.makedirs(advanced_directory) 
         
-        directory = ''
+        self.directory = ''
         if category == 'convo':
-            directory = convo_directory
+            self.directory = convo_directory
         elif category == 'science':
-            directory = scientific_directory
+            self.directory = scientific_directory
         elif category == 'advanced':
-            directory = advanced_directory
+            self.directory = advanced_directory
         else:
             return
         
         self.file_paths = []
         # Loop through files in the directory and add their paths to the list
-        for file_path in glob.glob(os.path.join(directory, '*')):
+        for file_path in glob.glob(os.path.join(self.directory, '*')):
             self.file_paths.append(file_path)
         
         # List to hold file contents
@@ -437,9 +438,8 @@ class WritingTopLevel(CTk.CTkToplevel):
         # Create and place the dropdown list
         self.journal_search = CTk.CTkButton(self, text="New Entry", command= lambda: self.create_journal_popup())
         self.journal_search.grid(row=4, column=3, pady = 10)
-        portafolio = Cycle(portfolio(category))
-
-        if len(portafolio.file_contents) != 0:
+        self.portafolio = portfolio(category)
+            
             
     # Helps incorporate window in the proper place
     def position_window(self, width, height):
@@ -486,8 +486,13 @@ class WritingTopLevel(CTk.CTkToplevel):
 
         # Ask for confirmation
         if messagebox.askyesno("Confirm", "Are you sure you want to submit?"):
-            # Process the journal text as needed
-            pass
+            # Get the current date and time
+            now = datetime.now()
+            filename = now.strftime("%m-%d-%Y_%I-%M-%S%p") + '.txt'
+            full_file = os.path.join(self.portafolio.directory, filename)
+            with open(full_file, 'w') as file:
+                file.write(journal_text)
+            self.journal_window.destroy()
         else:
             # User decided not to submit, you can handle it here
             pass  # Do nothing, or perhaps provide feedback to the user
