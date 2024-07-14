@@ -12,9 +12,6 @@ from tkinter import messagebox
 
 translator = Translator()
 
-class EmptyDirectoryError(Exception):
-    pass
-
 class Cycle:
     def __init__(self, iterable):
         self.items = iterable
@@ -236,13 +233,15 @@ class FlashcardsWindow(CTk.CTkToplevel):
         self.position_window(500, 400)
         self.title(f"JakeLingo: {title}")
 
+        lexico = lexicon(category)
+
         # Initializes relevant words
-        if len(lexicon(category).flashcard_list) == 0:
+        if len(lexico.flashcard_list) == 0:
             messagebox.showerror(title="Error", message="No available words.")
             self.destroy()
             return
         else:
-            self.flashcards = Cycle(random.sample(lexicon(category).flashcard_list, len(lexicon(category).flashcard_list)))
+            self.flashcards = Cycle(random.sample(lexico.flashcard_list, len(lexico.flashcard_list)))
 
         # Create a frame to contain the buttons
         self.button_frame = CTk.CTkFrame(self)
@@ -704,9 +703,8 @@ class Application(CTk.CTk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # dummies to set up directories
-        portfolio('scientific')
-        library('scientific')
+        # File setup
+        self.setup()
 
         # Initialize app settings
         CTk.set_appearance_mode('dark')
@@ -717,9 +715,6 @@ class Application(CTk.CTk):
 
         # Set the size of the window
         self.position_window(800, 450)
-
-        # File setup
-        self.setup()
 
         # Create three frames with borders across the middle
         addButton = CTk.CTkButton(self, text="Add Term", command= lambda:self.open_term())
@@ -772,6 +767,8 @@ class Application(CTk.CTk):
         spanDirectory = os.path.join(os.path.expanduser('~'), 'spanData')
         if not os.path.exists(spanDirectory):
             spwords('Español','Classification', 'verb?')
+            portfolio('scientific')
+            library('scientific')
     
     # Postitioning of window opening for presentation
     def position_window(self, width, height):
