@@ -8,8 +8,12 @@ import pandas as pd
 from spanishconjugator import Conjugator
 import random
 import glob
+from tkinter import messagebox
 
 translator = Translator()
+
+class EmptyDirectoryError(Exception):
+    pass
 
 class Cycle:
     def __init__(self, iterable):
@@ -124,6 +128,14 @@ class library:
         elif category == 'advanced':
             directory = advanced_directory
         else:
+            return
+        
+        self.file_paths = glob.glob(os.path.join(directory, '*'))
+
+        self.error = False
+        if not self.file_paths:
+            messagebox.showerror("Error", "No files found in the directory.")
+            self.error = True
             return
         
         self.file_paths = []
@@ -320,9 +332,14 @@ class ReadingTopLevel(CTk.CTkToplevel):
         self.position_window(700, 550)
         self.grab_set()
         self.resizable(False, False)
+
+        libruh = library(category)
+        if libruh.error:
+            self.destroy()
+            return
         
-        self.title_strings = Cycle(random.sample(library(category).file_paths, len(library(category).file_paths)))
-        self.paragraph_strings = Cycle(random.sample(library(category).file_contents, len(library(category).file_contents)))
+        self.title_strings = Cycle(random.sample(libruh.file_paths, len(libruh.file_paths)))
+        self.paragraph_strings = Cycle(random.sample(libruh.file_contents, len(libruh.file_contents)))
         
         # Create a frame to contain the reading content
         self.content_frame = CTk.CTkFrame(self)
@@ -686,6 +703,10 @@ class addterm(CTk.CTkToplevel):
 class Application(CTk.CTk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        # dummies to set up directories
+        portfolio('scientific')
+        library('scientific')
 
         # Initialize app settings
         CTk.set_appearance_mode('dark')
