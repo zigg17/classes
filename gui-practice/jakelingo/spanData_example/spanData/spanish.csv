@@ -1,0 +1,97 @@
+Español,Spanish,Classification,verb?
+ser,to be,Conversational,True
+conocer,to know,Conversational,True
+Célula,Cell,Scientific,False
+Fotosíntesis,Photosynthesis,Scientific,False
+Átomo,Atom,Scientific,False
+Diversificación,Diversification,Advanced,False
+Hipoteca,Mortgage,Advanced,False
+Catalizador,Catalyst,Scientific,False
+Celeridad,Speed,Advanced,False
+Neurociencia,Neuroscience,Scientific,False
+Patología,Pathology,Scientific,False
+Anatomía,Anatomy,Scientific,False
+encender,to light,Conversational,True
+captar,to capture,Conversational,True
+llorar,to cry,Conversational,True
+acuerdo,agreement,Conversational,False
+mismo,same,Conversational,False
+acabar,to finish,Conversational,True
+empacar,to pack,Conversational,True
+clavar,to nail,Conversational,True
+palta,avocado,Conversational,False
+esquina,corner,Conversational,False
+retaguardia,rear,Conversational,False
+atrás,back,Conversational,False
+descenso,decline,Conversational,False
+ocultar,to disguise,Conversational,True
+apuntir,to point,Conversational,True
+destruir,to destroy,Conversational,True
+interceptar,to intercept,Conversational,True
+contrabandear,to smuggle,Conversational,True
+tercera,third,Conversational,False
+advinar,to warn,Conversational,True
+regla,ruler,Conversational,False
+pues,well,Conversational,False
+culo,ass,Conversational,False
+sacar,to take out,Conversational,True
+elegir,to choose,Conversational,True
+camion,truck,Conversational,False
+bastante,quite,Conversational,False
+consigo,with him,Conversational,False
+Química,Chemistry,Scientific,False
+meter,to put,Conversational,True
+cuesta,costs,Conversational,False
+cagar,to shit,Conversational,True
+sana,fury,Conversational,False
+tanta,So much,Conversational,False
+volver,to return,Conversational,True
+eso,that,Conversational,False
+festejar,celebrate,Conversational,False
+cierto,True,Conversational,False
+barra,bar,Conversational,False
+mentir,to lie,Conversational,True
+rubia,blonde,Conversational,False
+andar,to walk,Conversational,True
+charlar,to chat,Conversational,True
+seguir,to continue,Conversational,True
+burlar,to outwit,Conversational,True
+merecido,deserved,Conversational,False
+leer,to read,Conversational,True
+ofrecer,to offer,Conversational,True
+pata,paw,Conversational,False
+secar,to dry off,Conversational,True
+listo,ready,Conversational,False
+frontera,border,Conversational,False
+guardar,to keep,Conversational,True
+entregar,to deliver,Conversational,True
+guardabarro,fender,Conversational,False
+heder,to stink,Conversational,True
+claro,clear,Conversational,False
+exhalar,to exhale,Conversational,True
+crecido,grown up,Conversational,False
+Montón,a lot,Conversational,False
+quedar,to meet,Conversational,True
+preso,prisoner,Conversational,False
+veneno,poison,Conversational,False
+vaina,thing(when you dont know),Conversational,False
+traer,to bring,Conversational,True
+manera,way,Conversational,False
+ninguno,none,Conversational,False
+Alcanzar,to reach,Conversational,True
+llenar,to fill,Conversational,True
+rutas,routes,Conversational,False
+cuadrar,to square up,Conversational,True
+primera,first,Conversational,False
+frondoso,leafy,Conversational,False
+golpear,to hit,Conversational,True
+adelante,forward,Conversational,False
+billete,ticket,Conversational,False
+vistazo,glance,Conversational,False
+tombo,pig (crime),Conversational,False
+demasiado,too much,Conversational,False
+arriesgar,to risk,Conversational,True
+abajo,below,Conversational,False
+pesar,to weigh,Conversational,True
+señal,sign,Scientific,False
+virales,viral,Scientific,False
