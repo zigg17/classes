@@ -1,0 +1,415 @@
+
+
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="description" content="A CU Boulder based lab studying the neurobiology of experiential factors and their effects on an organism's response to future challenge.">
+    <meta name="keywords" content="CU, Boulder, Neuroscience, Baratta, Lab, University, Academics, science, Michael Baratta, Michael, CU Boulder, Jake Ziegler, Jake, Maier, Steven Maier">
+    <meta name="author" content="Jake Ziegler">
+  </head>
+  <head>
+  <title>Baratta Lab</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+  
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="menu.png" type="image/x-icon">
+
+  <style>
+    .navbar .nav-link 
+    {
+      color: #000000;
+    }
+
+
+    .navbar-brand img 
+    {
+      height: 35px;
+      margin-right: 10px;
+    }
+
+    .navbar-brand 
+    {
+      display: flex;
+      align-items: center;
+      color: rgb(0, 0, 0);
+    }
+
+    .image-container 
+    {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .content-container 
+    {
+      position: relative;
+      z-index: 1;
+      margin-top: 50px; /* adjust this value to suit your needs */
+    }
+
+    .navbar 
+    {
+      border: 1px solid #ccc; /* add a 1px solid grey border to the navbar */
+    }
+
+    .img-container 
+    {
+      position: relative;
+      width: 100%;
+      height: auto;
+      overflow: hidden;
+    }
+
+    .img-container img 
+    {
+      width: 100%;
+      height: 600px;
+      display: block;
+      object-fit: cover;
+    }
+
+    .text-box 
+    {
+      position: absolute;
+      top: 20%;
+      left: 10%;
+      width: 30%;
+      height: 60%;
+      background-color: #ffffff;
+      opacity: 0.8;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      line-height: 1.5;
+      font-weight: bold;
+      color: #000000;
+    }
+
+    @media (max-width: 767px) 
+    {
+      .text-box 
+      {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 10px;
+        font-size: 18px;
+        line-height: 1.2;
+        top: 0;
+        left: 0;
+      }
+    }
+      
+    .btn-outline-black 
+    {
+      color: #000;
+      border-color: #000;
+    }
+  
+    .btn-outline-black:hover 
+    {
+      color: #fff;
+      background-color: #000;
+    }
+
+    .donate-button 
+    {
+      margin-left: .5rem; /* Adjust this value to your preference */
+    }
+
+    .custom-size-image 
+    {
+      height: 150px; /* Set the desired height */
+      width: 150px;
+    }
+
+    footer img 
+    {
+      width: 260px; /* set the width of the logo */
+      display: block; /* set the logo to display as a block element */
+      margin: 0 auto; /* center the logo within the footer */
+       /* add padding above the logo to create some space */
+    }
+
+    @media (max-width: 767px) {
+    .footer-image {
+      margin-bottom: 30px;
+    }
+  }
+
+
+    footer 
+    {
+      font-size: 0.6rem; /* Change the value to adjust the font size */
+    }
+
+    /* Style all links */
+    a 
+    {
+      color: black; /* Change the color value to your liking */
+      text-decoration: none; /* Remove underline */
+    }
+
+    /* Style links when hovered over */
+    a:hover 
+    {
+      color: black; /* Change the color value to your liking */
+      text-decoration: underline; /* Add underline on hover */
+    }
+
+
+    /* Default styles */
+    .mx-auto 
+    {
+      /* Center horizontally */
+      margin-left: auto;
+      margin-right: auto;
+    }
+  
+    /* Media query for smaller screens */
+    @media (max-width: 768px) 
+    {
+      /* Add margin-bottom */
+      .mx-auto 
+      {
+        margin-bottom: 40px;
+      }
+    }
+
+
+    .text-box 
+    {
+      position: absolute;
+      top: 42%;
+      left: 10%;
+      width: 30%;
+      height: 27%;
+      background-color: #ffffff;
+      opacity: .95;
+      padding: 20px;
+      text-align: left;
+      font-size: 36px;
+      line-height: 1.5;
+      font-weight: bold;
+      color: #000000;
+      display: flex;
+      flex-direction: column;
+      word-wrap: break-word;
+    }
+
+    @media screen and (max-width: 768px) 
+    {
+        .text-box 
+        {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 80%;
+          height: auto;
+          font-size: auto;
+          line-height: 1.2;
+          display: flex;
+          flex-direction: column;
+        }
+    }
+
+
+    @media screen and (min-width: 768px) 
+    {
+        .text-box 
+        {
+          position: absolute;
+          top: 50%;
+          left: 25%;
+          transform: translate(-50%, -50%);
+          width: 35%;
+          height: auto;
+          font-size: auto;
+          text-size-adjust: auto;
+          line-height: 1.2;
+          display: flex;
+          flex-direction: column;
+        }
+    }
+
+    @media only screen and (min-width: 768px) 
+    {
+      /* Only apply styles on screens wider than 768px */
+      .nav-item 
+      {
+        position: relative;
+      }
+
+      .nav-item::after 
+      {
+        content: '';
+        display: block;
+        width: 0;
+        height: 2px;
+        margin-top: 5px;
+        background-color: transparent;
+        transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
+      }
+
+      .nav-item:hover::after 
+      {
+        width: 100%;
+        background-color: #333;
+      }
+    }
+
+    
+  </style>
+
+<meta charset="UTF-8"><meta name="description" content="A CU boulder based lab studying the neurobiology of experiential factors and their effects on an organism's response to future challenge."><meta name="keywords" content="CU, Boulder, Neuroscience, Baratta, Lab, University, Academics, science"><meta name="author" content="Jake Ziegler"><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-ZQFEZWJ2NX"></script><script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'G-ZQFEZWJ2NX');
+</script></head>
+
+
+  
+  
+  
+  
+
+
+<!-- Google tag (gtag.js) -->
+
+
+
+
+
+<body>
+  
+  <nav class="navbar navbar-expand-md bg-light fixed-top">
+    <a class="navbar-brand" href="index.html">
+      <img src="cube-3d.png" alt="Logo">
+      Baratta Lab
+    </a>
+
+     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+      <img src="menu.png" alt="Toggle icon" style="width: 20px; height: 20px;">
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">Home</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="research.html">Our Work</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="staff.html">Team</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="gallery.html">Gallery</a>
+        </li>
+
+        
+      </ul>
+
+    </div>
+
+  </nav>
+
+  <div class="img-container">
+    <img src="shRNA-vglut2_auto_x2_colored_toned.jpg" alt="Image">
+    <div class="text-box">
+      <p>Investigating the neural basis of resilience</p>
+    </div>
+  </div>
+  
+
+
+<div style="margin-bottom: 50px;"></div>
+  <div></div>
+
+  <header>
+    <h1 style="text-align: center;">Projects</h1>
+  </header>
+  
+  <div class="container">
+    <div class="row mt-5">
+      
+      <div class="col-sm-4 text-center mt-3 mx-auto">
+        <img src="stress-management.png" class="custom-size-image">
+        <h3 class="mt-3">Project 1</h3>
+        <p>Identify the impacts of behavioral control on ensembles throughout the brain.</p>
+      </div>
+      
+      <div class="col-sm-4 text-center mt-3 mx-auto">
+        <img src="man.png" class="custom-size-image">
+        <h3 class="mt-3">Project 2</h3>
+        <p>Identify how experiential factors influence varying behavioral and structural outcomes across sexes.</p>
+      </div>
+      
+      <div class="col-sm-4 text-center mt-3 mx-auto">
+        <img src="domin.png" class="custom-size-image">
+        <h3 class="mt-3">Project 3</h3>
+        <p>Identify what experiential and structural factors facilitate later social dominance.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom: 50px;"></div>
+  <div></div>
+
+  <footer class="border-top">
+    <div class="row justify-content-center py-4 bg-light">
+      <div class="col-11">
+        <div class="row">
+          <div class="col-md-8 col-lg-6 my-auto">
+            <a href="https://www.colorado.edu/">
+              <img src="buffy.webp" alt="Pepper Logo" class = "footer-image">
+            </a>
+            
+          </div>
+          <div class="col-md-3 col-lg-2 text-center ">
+            <h6 class="mb-3 mb-lg-4 bold-text"><b>MENU</b></h6>
+            <ul class="list-unstyled extra-space">
+              <li><a  href="index.html">Home</a></li>
+              <li><a  href="research.html">Our Work</a></li>
+              <li><a href="staff.html">Team</a></li>
+              <li><a  href="gallery.html">Gallery</a></li>
+            </ul>
+          </div>
+          <div class="col-md-3 col-lg-2 text-center">
+            <h6 class="mb-3 mb-lg-4 bold-text"><b>ADDRESS</b></h6>
+            <p class="mb-3"><a href="https://www.google.com/maps/search/?api=1&query=2860+Wilderness+Pl,+Boulder,+CO+80301" target="_blank">2860 Wilderness Place<br>Boulder, CO 80302<br>USA<br></a>
+            </p>
+          </div>
+          <div class="col-md-3 col-lg-2 text-center ">
+            <h6 class="mb-3 mb-lg-4 bold-text"><b>ICONS</b></h6>
+            <ul class="list-unstyled extra-space">
+              <li><a href="https://www.flaticon.com/free-icons/stress-management" title="stress management icons">Stress icon created by Freepik</a></li>
+              <li><a href="https://www.flaticon.com/free-icons/gender" title="symbol icons">Symbol icon created by LAFS</a></li>
+              <li><a href="https://www.flaticon.com/free-icons/stress-management" title="stress management icons">Rat icon created by Freepik</a></li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  
+</body></html>
