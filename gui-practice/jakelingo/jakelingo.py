@@ -347,8 +347,7 @@ class ReadingTopLevel(CTk.CTkToplevel):
         # Create a frame to contain the reading content
         self.content_frame = CTk.CTkFrame(self)
         self.content_frame.pack(fill='both', expand=True, padx=10, pady=10)
-        
-        # Example content
+
         self.content_label = CTk.CTkLabel(self.content_frame, text=self.title_strings.current().split("/")[-1],
                                           font=("Arial", 14))
         self.content_label.pack(pady=10, padx=10)
@@ -424,6 +423,7 @@ class WritingTopLevel(CTk.CTkToplevel):
         self.position_window(560, 450)
         self.grab_set()
         self.resizable(False, False)
+        self.portafolio = portfolio(category)
 
         self.left_button = CTk.CTkButton(self, text="prev")
         self.left_button.grid(row=4, column=0, pady = 10)
@@ -436,10 +436,8 @@ class WritingTopLevel(CTk.CTkToplevel):
         self.journal_search.grid(row=4, column=2, pady = 10)
 
         # Create and place the dropdown list
-        self.journal_search = CTk.CTkButton(self, text="New Entry", command= lambda: self.create_journal_popup())
+        self.journal_search = CTk.CTkButton(self, text="New Entry", command= lambda: self.create_journal_popup(category))
         self.journal_search.grid(row=4, column=3, pady = 10)
-        self.portafolio = portfolio(category)
-            
             
     # Helps incorporate window in the proper place
     def position_window(self, width, height):
@@ -451,6 +449,13 @@ class WritingTopLevel(CTk.CTkToplevel):
 
     def open_journal_entries_popup(self):
         # Create a new top-level window for journal entries
+        flag = False
+        if len(self.portafolio.file_contents) == 0:
+            messagebox.showerror("Error", "No entries.")
+            return
+        else:
+            flag = True
+        
         self.journal_entries_window = CTk.CTkToplevel(self)
         self.journal_entries_window.geometry("+{}+{}".format(self.winfo_rootx()+100, self.winfo_rooty()+75))
         self.journal_entries_window.title("Journal Entries")
@@ -461,8 +466,15 @@ class WritingTopLevel(CTk.CTkToplevel):
         # Use a scrollable frame to accommodate a large number of entries
         scrollable_frame = CTk.CTkScrollableFrame(self.journal_entries_window)
         scrollable_frame.pack(fill='both', expand=True)
-    
-    def create_journal_popup(self):
+
+        if flag:
+            for entry in self.portafolio.file_paths:
+                date_button = CTk.CTkButton(scrollable_frame,
+                                            text=entry.split('/')[-1].split('.')[0])
+                date_button.pack(pady=5, padx=10, fill='x')
+
+
+    def create_journal_popup(self, category):
         # Create a new top-level window
         self.journal_window = CTk.CTkToplevel(self)
         self.journal_window.title("Journal Entry")
@@ -477,10 +489,10 @@ class WritingTopLevel(CTk.CTkToplevel):
         self.journal_entry.pack(padx=10, pady=10)
 
         # Create a submit button
-        submit_button = CTk.CTkButton(self.journal_window, text="Submit", command= lambda:self.submit_journal_entry())
+        submit_button = CTk.CTkButton(self.journal_window, text="Submit", command= lambda:self.submit_journal_entry(category))
         submit_button.pack(pady=10)
 
-    def submit_journal_entry(self):
+    def submit_journal_entry(self,category):
         # Get text from the text entry box
         journal_text = self.journal_entry.get("1.0", "end-1c")
 
@@ -493,9 +505,7 @@ class WritingTopLevel(CTk.CTkToplevel):
             with open(full_file, 'w') as file:
                 file.write(journal_text)
             self.journal_window.destroy()
-        else:
-            # User decided not to submit, you can handle it here
-            pass  # Do nothing, or perhaps provide feedback to the user
+            self.portafolio = portfolio(category)
 
 def open_writing_window(category):
     titles = {
