@@ -660,12 +660,12 @@ class JournalFrame(CTk.CTkFrame):
     def __init__(self, parent):
         super().__init__(parent, corner_radius=0, fg_color="transparent")
         self.parent = parent
-        self.grid_columnconfigure(1, weight=1) # Adjust weights as necessary
+        self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(1, weight=1)
 
 
-        self.journal_frame = CTk.CTkFrame(self,width = 600, height= 250)  # Adjust size as needed
-        self.journal_frame.grid(row=1, column=1, columnspan=4)  # Adjust position as needed
+        self.journal_frame = CTk.CTkFrame(self,width = 600, height= 250)
+        self.journal_frame.grid(row=1, column=1, columnspan=4)
         self.load_most_recent_entry()
 
         self.sorted_entries = []
