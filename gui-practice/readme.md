@@ -4,6 +4,6 @@ A place in which I practiced coding UIs and their corresponding backends from th
 1. [Weave](weave) - a meditation app that tracks statistics.
 2. [JakeLingo](jakelingo) - a spanish learning app augmented towards my learning style.
 ## Projects utlizing django via python:
-1. 
+1. [My portfolio webside](), pretty self explanatory
 ## Projects utilizing HTML, bootstrap, and css:
 1. [Baratta Lab](https://www.barattalab.org) - informational lab website created for the Baratta Lab, code and files [here](gui-practice/BarattaLab).
