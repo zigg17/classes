@@ -153,6 +153,11 @@ class library:
                 data = file.read()
                 self.file_contents.append(data)
 
+class writing_entry:
+    def __init__(self, title, text):
+        self.title = title
+        self.text = text
+
 class portfolio: 
     def __init__ (self, category):
         app_data_directory = os.path.join(os.path.expanduser('~'), 'spanData')
@@ -181,20 +186,19 @@ class portfolio:
         else:
             return
         
-        self.file_paths = []
-        # Loop through files in the directory and add their paths to the list
-        for file_path in glob.glob(os.path.join(self.directory, '*')):
-            self.file_paths.append(file_path)
+        self.entries = []
         
-        # List to hold file contents
-        self.file_contents = []
-
-        # Loop through each file path and read the content into a string
-        for file_path in self.file_paths:
+        # Loop through files in the directory, add paths to the list, and read their contents
+        for file_path in glob.glob(os.path.join(self.directory, '*')):
             with open(file_path, 'r') as file:
                 data = file.read()
-                self.file_contents.append(data)  
+            self.entries.append(writing_entry(file_path, data))
+        
+        self.entries.sort(key=lambda entry: datetime.strptime(os.path.basename(entry.title),
+                                                              '%m-%d-%Y_%I-%M-%S%p.txt'))
 
+    def add_entry(self, file_path, data):
+        self.entries.append(writing_entry(file_path, data))
 # Spanish translatore utilizing google translate
 def spanTrans(text_to_translate):
     global translator
@@ -425,19 +429,38 @@ class WritingTopLevel(CTk.CTkToplevel):
         self.resizable(False, False)
         self.portafolio = portfolio(category)
 
+        # Configure grid columns and rows
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+        self.grid_columnconfigure(3, weight=1)
+        self.grid_rowconfigure(0, weight=0)
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(2, weight=1)
+        self.grid_rowconfigure(3, weight=0)
+        self.grid_rowconfigure(4, weight=0)
+
+        # Add title label at the top
+        self.title_label = CTk.CTkLabel(self, text= 'piss', font=("Helvetica", 16))
+        self.title_label.grid(row=0, column=0, columnspan=4, pady=10)
+
+        # Add text box in the middle
+        self.text_box = CTk.CTkTextbox(self, height=20)
+        self.text_box.grid(row=1, column=0, rowspan=3, columnspan=4, padx=20, pady=10, sticky='nsew')
+
+        # Add buttons at the bottom
         self.left_button = CTk.CTkButton(self, text="prev")
-        self.left_button.grid(row=4, column=0, pady = 10)
+        self.left_button.grid(row=4, column=0, pady=15, sticky='ew')
 
         self.right_button = CTk.CTkButton(self, text="next")
-        self.right_button.grid(row=4, column=1, pady = 10)
+        self.right_button.grid(row=4, column=1, pady=15, sticky='ew')
 
-        # Create and place the dropdown list
-        self.journal_search = CTk.CTkButton(self, text="Search By Date", command= lambda: self.open_journal_entries_popup())
-        self.journal_search.grid(row=4, column=2, pady = 10)
+        self.journal_search_button = CTk.CTkButton(self, text="Search By Date", command=self.open_journal_entries_popup)
+        self.journal_search_button.grid(row=4, column=2, pady=15, sticky='ew')
 
-        # Create and place the dropdown list
-        self.journal_search = CTk.CTkButton(self, text="New Entry", command= lambda: self.create_journal_popup(category))
-        self.journal_search.grid(row=4, column=3, pady = 10)
+        self.new_entry_button = CTk.CTkButton(self, text="New Entry", command=lambda: self.create_journal_popup(category))
+        self.new_entry_button.grid(row=4, column=3, pady=15, sticky='ew')
+
             
     # Helps incorporate window in the proper place
     def position_window(self, width, height):
@@ -450,7 +473,7 @@ class WritingTopLevel(CTk.CTkToplevel):
     def open_journal_entries_popup(self):
         # Create a new top-level window for journal entries
         flag = False
-        if len(self.portafolio.file_contents) == 0:
+        if len(self.portafolio.entries) == 0:
             messagebox.showerror("Error", "No entries.")
             return
         else:
@@ -468,7 +491,8 @@ class WritingTopLevel(CTk.CTkToplevel):
         scrollable_frame.pack(fill='both', expand=True)
 
         if flag:
-            for entry in self.portafolio.file_paths:
+            for entry in self.portafolio.entries:
+                entry = entry.title
                 date_button = CTk.CTkButton(scrollable_frame,
                                             text=entry.split('/')[-1].split('.')[0])
                 date_button.pack(pady=5, padx=10, fill='x')
