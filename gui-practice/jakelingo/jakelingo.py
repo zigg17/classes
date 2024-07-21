@@ -195,7 +195,7 @@ class portfolio:
             self.entries.append(writing_entry(file_path, data))
         
         self.entries.sort(key=lambda entry: datetime.strptime(os.path.basename(entry.title),
-                                                              '%m-%d-%Y_%I-%M-%S%p.txt'))
+                                                      '%m-%d-%Y_%I-%M-%S%p.txt'), reverse=True)
 
     def add_entry(self, file_path, data):
         self.entries.append(writing_entry(file_path, data))
@@ -427,6 +427,7 @@ class WritingTopLevel(CTk.CTkToplevel):
         self.position_window(560, 450)
         self.grab_set()
         self.resizable(False, False)
+        self.journal_entries_window = None  # Initialize the attribute
         self.portafolio = portfolio(category)
 
         # Configure grid columns and rows
@@ -441,7 +442,7 @@ class WritingTopLevel(CTk.CTkToplevel):
         self.grid_rowconfigure(4, weight=0)
 
         # Add title label at the top
-        self.title_label = CTk.CTkLabel(self, text= 'piss', font=("Helvetica", 16))
+        self.title_label = CTk.CTkLabel(self, text= 'No Entries', font=("Helvetica", 16))
         self.title_label.grid(row=0, column=0, columnspan=4, pady=10)
 
         # Add text box in the middle
@@ -460,6 +461,8 @@ class WritingTopLevel(CTk.CTkToplevel):
 
         self.new_entry_button = CTk.CTkButton(self, text="New Entry", command=lambda: self.create_journal_popup(category))
         self.new_entry_button.grid(row=4, column=3, pady=15, sticky='ew')
+
+        self.load_writing(self.portafolio.entries[0].title.split('/')[-1].split('.')[0])
 
             
     # Helps incorporate window in the proper place
@@ -492,11 +495,28 @@ class WritingTopLevel(CTk.CTkToplevel):
 
         if flag:
             for entry in self.portafolio.entries:
-                entry = entry.title
+                entry = entry.title.split('/')[-1].split('.')[0]
+                print(entry)
                 date_button = CTk.CTkButton(scrollable_frame,
-                                            text=entry.split('/')[-1].split('.')[0])
+                                            text=entry,
+                                            command= lambda bt=entry: self.load_writing(bt))
                 date_button.pack(pady=5, padx=10, fill='x')
+    
+    def load_writing(self, filename):        
+        file_path = os.path.join(self.portafolio.directory, (filename + '.txt'))
+        with open(file_path, 'r') as file:
+            # Read the content of the file
+            file_content = file.read()
+        
+        self.title_label.configure(text = 'Entry at: ' + filename)
 
+        self.text_box.configure(state='normal')
+        self.text_box.delete('1.0', 'end')
+        self.text_box.insert('1.0', file_content)
+        self.text_box.configure(state='disabled')
+
+        if self.journal_entries_window is not None and self.journal_entries_window.winfo_exists():
+            self.journal_entries_window.destroy()
 
     def create_journal_popup(self, category):
         # Create a new top-level window
@@ -530,6 +550,7 @@ class WritingTopLevel(CTk.CTkToplevel):
                 file.write(journal_text)
             self.journal_window.destroy()
             self.portafolio = portfolio(category)
+            self.load_writing(self.portafolio.entries[0].title.split('/')[-1].split('.')[0])
 
 def open_writing_window(category):
     titles = {
