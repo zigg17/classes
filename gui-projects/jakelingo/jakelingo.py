@@ -158,8 +158,8 @@ class writing_entry:
         self.title = title
         self.text = text
 
-class portfolio: 
-    def __init__ (self, category):
+class portfolio:
+    def __init__(self, category):
         app_data_directory = os.path.join(os.path.expanduser('~'), 'spanData')
         if not os.path.exists(app_data_directory):
             os.makedirs(app_data_directory)
@@ -174,7 +174,7 @@ class portfolio:
             os.makedirs(scientific_directory)
         advanced_directory = os.path.join(library_directory, 'advanced')
         if not os.path.exists(advanced_directory):
-            os.makedirs(advanced_directory) 
+            os.makedirs(advanced_directory)
         
         self.directory = ''
         if category == 'convo':
@@ -195,10 +195,8 @@ class portfolio:
             self.entries.append(writing_entry(file_path, data))
         
         self.entries.sort(key=lambda entry: datetime.strptime(os.path.basename(entry.title),
-                                                      '%m-%d-%Y_%I-%M-%S%p.txt'), reverse=True)
+                                                              '%m-%d-%Y_%I-%M-%S%p.txt'))
 
-    def add_entry(self, file_path, data):
-        self.entries.append(writing_entry(file_path, data))
 # Spanish translatore utilizing google translate
 def spanTrans(text_to_translate):
     global translator
@@ -429,6 +427,7 @@ class WritingTopLevel(CTk.CTkToplevel):
         self.resizable(False, False)
         self.journal_entries_window = None  # Initialize the attribute
         self.portafolio = portfolio(category)
+        self.current_index = len(self.portafolio.entries) - 1  # Start at the most recent entry
 
         # Configure grid columns and rows
         self.grid_columnconfigure(0, weight=1)
@@ -442,7 +441,7 @@ class WritingTopLevel(CTk.CTkToplevel):
         self.grid_rowconfigure(4, weight=0)
 
         # Add title label at the top
-        self.title_label = CTk.CTkLabel(self, text= 'No Entries', font=("Helvetica", 16))
+        self.title_label = CTk.CTkLabel(self, text='No Entries', font=("Helvetica", 16))
         self.title_label.grid(row=0, column=0, columnspan=4, pady=10)
 
         # Add text box in the middle
@@ -450,10 +449,10 @@ class WritingTopLevel(CTk.CTkToplevel):
         self.text_box.grid(row=1, column=0, rowspan=3, columnspan=4, padx=20, pady=10, sticky='nsew')
 
         # Add buttons at the bottom
-        self.left_button = CTk.CTkButton(self, text="prev")
+        self.left_button = CTk.CTkButton(self, text="prev", command=self.navigate_to_previous)
         self.left_button.grid(row=4, column=0, pady=15, sticky='ew')
 
-        self.right_button = CTk.CTkButton(self, text="next")
+        self.right_button = CTk.CTkButton(self, text="next", command=self.navigate_to_next)
         self.right_button.grid(row=4, column=1, pady=15, sticky='ew')
 
         self.journal_search_button = CTk.CTkButton(self, text="Search By Date", command=self.open_journal_entries_popup)
@@ -462,9 +461,11 @@ class WritingTopLevel(CTk.CTkToplevel):
         self.new_entry_button = CTk.CTkButton(self, text="New Entry", command=lambda: self.create_journal_popup(category))
         self.new_entry_button.grid(row=4, column=3, pady=15, sticky='ew')
 
-        self.load_writing(self.portafolio.entries[0].title.split('/')[-1].split('.')[0])
+        if self.portafolio.entries:
+            self.load_writing(self.current_index)
+        else:
+            messagebox.showerror("Error", "No entries found.")
 
-            
     # Helps incorporate window in the proper place
     def position_window(self, width, height):
         screen_width = self.winfo_screenwidth()
@@ -481,9 +482,9 @@ class WritingTopLevel(CTk.CTkToplevel):
             return
         else:
             flag = True
-        
+
         self.journal_entries_window = CTk.CTkToplevel(self)
-        self.journal_entries_window.geometry("+{}+{}".format(self.winfo_rootx()+100, self.winfo_rooty()+75))
+        self.journal_entries_window.geometry("+{}+{}".format(self.winfo_rootx() + 100, self.winfo_rooty() + 75))
         self.journal_entries_window.title("Journal Entries")
 
         # Set the popup as a modal window
@@ -494,21 +495,23 @@ class WritingTopLevel(CTk.CTkToplevel):
         scrollable_frame.pack(fill='both', expand=True)
 
         if flag:
-            for entry in self.portafolio.entries:
-                entry = entry.title.split('/')[-1].split('.')[0]
-                print(entry)
-                date_button = CTk.CTkButton(scrollable_frame,
-                                            text=entry,
-                                            command= lambda bt=entry: self.load_writing(bt))
+            for index, entry in enumerate(self.portafolio.entries):
+                entry_date = entry.title.split('/')[-1].split('.')[0]
+                date_button = CTk.CTkButton(scrollable_frame, text=entry_date,
+                                            command=lambda idx=index: self.load_writing(idx))
                 date_button.pack(pady=5, padx=10, fill='x')
-    
-    def load_writing(self, filename):        
-        file_path = os.path.join(self.portafolio.directory, (filename + '.txt'))
+
+    def load_writing(self, index):
+        if index < 0 or index >= len(self.portafolio.entries):
+            return
+
+        self.current_index = index
+        entry = self.portafolio.entries[index]
+        file_path = entry.title
         with open(file_path, 'r') as file:
-            # Read the content of the file
             file_content = file.read()
-        
-        self.title_label.configure(text = 'Entry at: ' + filename)
+
+        self.title_label.configure(text='Entry at: ' + entry.title.split('/')[-1].split('.')[0])
 
         self.text_box.configure(state='normal')
         self.text_box.delete('1.0', 'end')
@@ -518,6 +521,17 @@ class WritingTopLevel(CTk.CTkToplevel):
         if self.journal_entries_window is not None and self.journal_entries_window.winfo_exists():
             self.journal_entries_window.destroy()
 
+    def navigate_to_previous(self):
+        if self.current_index > 0:
+            self.current_index -= 1
+            self.load_writing(self.current_index)
+
+    def navigate_to_next(self):
+        if self.current_index < len(self.portafolio.entries) - 1:
+            self.current_index += 1
+            self.load_writing(self.current_index)
+        
+
     def create_journal_popup(self, category):
         # Create a new top-level window
         self.journal_window = CTk.CTkToplevel(self)
@@ -526,17 +540,17 @@ class WritingTopLevel(CTk.CTkToplevel):
         self.resizable(False, False)
 
         # Position the new window relative to the main window
-        self.journal_window.geometry("+{}+{}".format(self.winfo_rootx()+100, self.winfo_rooty()+75))
+        self.journal_window.geometry("+{}+{}".format(self.winfo_rootx() + 100, self.winfo_rooty() + 75))
 
         # Create a text entry box
-        self.journal_entry = CTk.CTkTextbox(self.journal_window, height=300, width=500, wrap = 'word')
+        self.journal_entry = CTk.CTkTextbox(self.journal_window, height=300, width=500, wrap='word')
         self.journal_entry.pack(padx=10, pady=10)
 
         # Create a submit button
-        submit_button = CTk.CTkButton(self.journal_window, text="Submit", command= lambda:self.submit_journal_entry(category))
+        submit_button = CTk.CTkButton(self.journal_window, text="Submit", command=lambda: self.submit_journal_entry(category))
         submit_button.pack(pady=10)
 
-    def submit_journal_entry(self,category):
+    def submit_journal_entry(self, category):
         # Get text from the text entry box
         journal_text = self.journal_entry.get("1.0", "end-1c")
 
@@ -549,8 +563,9 @@ class WritingTopLevel(CTk.CTkToplevel):
             with open(full_file, 'w') as file:
                 file.write(journal_text)
             self.journal_window.destroy()
-            self.portafolio = portfolio(category)
-            self.load_writing(self.portafolio.entries[0].title.split('/')[-1].split('.')[0])
+            self.portafolio = portfolio(category)  # Refresh the portfolio to include the new entry
+            self.current_index = len(self.portafolio.entries) - 1  # Reset the index to the most recent entry
+            self.load_writing(self.current_index)  # Load the most recent entry
 
 def open_writing_window(category):
     titles = {
@@ -559,6 +574,8 @@ def open_writing_window(category):
         'advanced': 'Advanced',
     }
     WritingTopLevel(category=category, title=titles[category])
+
+
 
 class GridEntryWindow(CTk.CTkToplevel):
     def __init__(self, verb_tense='present'):
